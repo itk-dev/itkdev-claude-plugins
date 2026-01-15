@@ -31,7 +31,7 @@ Team members can install the marketplace and plugins with:
 
 ### browser-feedback
 
-Browser feedback collection tool from [mcp-claude-code-browser-feedback](https://github.com/yepzdk/mcp-claude-code-browser-feedback).
+Browser feedback collection tool from [mcp-claude-code-browser-feedback](https://github.com/itk-dev/mcp-claude-code-browser-feedback).
 
 ## Adding New Tools
 

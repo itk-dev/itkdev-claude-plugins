@@ -2,7 +2,7 @@
   "mcpServers": {
     "browser-feedback": {
       "command": "npx",
-      "args": ["-y", "github:yepzdk/mcp-claude-code-browser-feedback"]
+      "args": ["-y", "github:itk-dev/mcp-claude-code-browser-feedback"]
     }
   }
 }

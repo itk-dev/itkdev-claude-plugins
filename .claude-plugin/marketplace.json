@@ -10,7 +10,7 @@
     {
       "name": "itkdev-tools",
       "description": "ITK Dev tools and MCP servers for Claude Code",
-      "source": "."
+      "source": "./"
     }
   ]
 }

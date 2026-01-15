@@ -1,6 +1,6 @@
 # Example Command
 
-This is an example slash command for the team-tools plugin.
+This is an example slash command for the itkdev-tools plugin.
 
 ## Usage
 

@@ -1,11 +1,11 @@
-# Team Claude Plugins
+# ITK Dev Claude Plugins
 
-A Claude Code plugin marketplace for team tools and MCP servers.
+A Claude Code plugin marketplace for ITK Dev team tools and MCP servers.
 
 ## Structure
 
 ```
-team-claude-plugins/
+itkdev-claude-plugins/
 ├── .claude-plugin/
 │   ├── plugin.json            # Plugin manifest
 │   └── marketplace.json       # Marketplace catalog
@@ -21,17 +21,17 @@ Team members can install the marketplace and plugins with:
 
 ```bash
 # Add the marketplace
-/plugin marketplace add yepzdk/team-claude-plugins
+/plugin marketplace add itk-dev/itkdev-claude-plugins
 
-# Install the team-tools plugin
-/plugin install team-tools@team-marketplace
+# Install the itkdev-tools plugin
+/plugin install itkdev-tools@itkdev-marketplace
 ```
 
 ## Included MCP Servers
 
 ### browser-feedback
 
-Browser feedback collection tool from [mcp-claude-code-browser-feedback](https://github.com/yepzdk/mcp-claude-code-browser-feedback).
+Browser feedback collection tool from [mcp-claude-code-browser-feedback](https://github.com/itk-dev/mcp-claude-code-browser-feedback).
 
 ## Adding New Tools
 

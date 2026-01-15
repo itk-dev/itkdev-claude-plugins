@@ -1,0 +1,6 @@
+{
+  "name": "itkdev-marketplace",
+  "plugins": [
+    { "name": "itkdev-tools", "source": "." }
+  ]
+}

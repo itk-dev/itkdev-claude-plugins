@@ -1,58 +1,95 @@
 ---
 name: github-issue-workflow
-description: Work through GitHub issues following the ITK-dev workflow. Use this skill when you need to pick an issue, develop a solution, create a PR, review code, and merge. Handles the complete development lifecycle from issue selection to merge.
+description: Autonomous GitHub issue workflow: develop, test, review, merge. Use this skill to work through GitHub issues with minimal user interaction - only pausing when user review/merge is required.
 ---
 
 # GitHub Issue Workflow
 
-You are working through GitHub issues following the ITK-dev workflow. Execute these steps:
+You are an autonomous developer working through GitHub issues. Work with MINIMAL user interaction - only pause when user review/merge is required.
 
 ## PHASE 1: Issue Selection
-1. Run `gh issue list --state open --limit 20` to show open issues
-2. Ask the user which issue to work on (or let them specify one)
+1. Run `gh issue list --state open --limit 10` to show open issues
+2. If user provided an issue number, use that. Otherwise, present the list and ask which issue to work on.
 3. Run `gh issue view <number>` to get full details
-4. Summarize the issue and confirm understanding with the user
+4. Briefly summarize the issue and START WORKING IMMEDIATELY - do not ask for confirmation.
 
-## PHASE 2: Development
+## PHASE 2: Development (AUTONOMOUS)
 1. Switch to main branch and pull latest: `git checkout main && git pull`
 2. Create feature branch: `git checkout -b feature/issue-<number>-<short-description>`
-3. Plan the implementation (use EnterPlanMode for non-trivial tasks)
-4. Implement the solution following project guidelines in CLAUDE.md
+3. For non-trivial tasks, use EnterPlanMode to plan implementation
+4. Implement the solution following CLAUDE.md guidelines
 5. Update CHANGELOG.md with the changes
-6. Run `task ci` to verify all checks pass
-7. Fix any issues until CI passes
+6. Run `task ci` and fix any issues until CI passes
+7. Commit changes with descriptive message referencing the issue
+8. Push branch and create PR with proper format
 
-## PHASE 3: Create PR
-1. Commit changes with descriptive message referencing the issue
-2. Push branch: `git push -u origin <branch-name>`
-3. Create PR with `gh pr create` following this format:
-   - Title: Brief description (Closes #<issue-number>)
-   - Body: ## Summary (bullet points), ## Test plan (checkboxes)
+## PHASE 3: Automated Testing (AUTONOMOUS)
+Automatically test based on the type of change:
 
-## PHASE 4: UI Testing (if applicable)
-1. Ask user if this change has UI components that need testing
-2. If yes, use the dev-browser skill or browser-feedback tools to test
-3. Document any UI issues found and fix them
+**For UI changes:**
+- Use dev-browser skill to navigate to the affected page
+- Test the specific functionality that was changed
+- Take screenshots if helpful
+- Document any issues found and fix them
 
-## PHASE 5: Code Review
-1. Use the Task tool with subagent_type='pr-review-toolkit:code-reviewer' to review the changes
-2. Also run 'pr-review-toolkit:silent-failure-hunter' for error handling review
-3. Present review findings to user
-4. Fix any issues identified in review
-5. Push fixes and re-run CI if needed
+**For API/backend changes:**
+- If there's a UI component (like a download button), test it via dev-browser
+- Verify the fix works as expected
 
-## PHASE 6: Merge
-1. Confirm with user that PR is ready to merge
-2. Run `gh pr merge --squash --delete-branch` to merge
-3. Switch back to main: `git checkout main && git pull`
+**For PDF/report changes:**
+- Navigate to a scan results page
+- Click the PDF download button
+- Verify no errors occur
 
-## PHASE 7: Next Issue
-1. Ask user if they want to continue with another issue
-2. If yes, return to Phase 1
+**For form/validation changes:**
+- Navigate to the relevant form
+- Test with valid and invalid inputs
 
-## Important Guidelines
+Fix any issues found during testing, commit, and push.
+
+## PHASE 4: Automated Code Review (AUTONOMOUS)
+1. Run Task tool with subagent_type='pr-review-toolkit:code-reviewer'
+2. Run Task tool with subagent_type='pr-review-toolkit:silent-failure-hunter'
+3. If HIGH priority issues are found, fix them automatically
+4. For MEDIUM/LOW issues, use judgment - fix if straightforward, otherwise note them
+5. Push any fixes made
+
+## PHASE 5: User Review & Merge (WAIT FOR USER)
+Present a summary to the user:
+- What was implemented
+- What was tested
+- Code review results and any fixes made
+- PR link
+
+Then say: "PR is ready for your review and merge. I'll wait for the merge to complete."
+
+Wait for merge using:
+```bash
+while true; do
+  pr_state=$(gh pr view <PR_NUMBER> --json state -q '.state')
+  if [ "$pr_state" = "MERGED" ]; then
+    echo "PR merged!"
+    break
+  fi
+  sleep 10
+done
+```
+
+## PHASE 6: Next Issue (AFTER MERGE)
+1. Switch to main and pull: `git checkout main && git pull`
+2. Check for remaining open issues: `gh issue list --state open --limit 5`
+3. If there are open issues, suggest the next one to tackle:
+   "Merge complete! Here are the remaining open issues:
+   [list issues]
+
+   I suggest we tackle #XX next because [reason]. Should I start working on it?"
+4. If user confirms, immediately start Phase 1 with that issue number.
+
+## Important Rules
+- Work AUTONOMOUSLY through phases 1-4 without asking for confirmation
+- Only pause at Phase 5 for user review/merge
 - Always follow CLAUDE.md guidelines
 - Never commit directly to main
 - Always run `task ci` before creating PR
-- All user-facing text in Danish, code/commits in English
-- Ask for clarification if requirements are unclear
+- Fix issues found by automated testing and review without asking
+- Be efficient - don't ask unnecessary questions

@@ -1,6 +1,6 @@
 ---
 name: github-issue-workflow
-description: Autonomous GitHub issue workflow: develop, test, review, merge. Use this skill to work through GitHub issues with minimal user interaction - only pausing when user review/merge is required.
+description: "Autonomous GitHub issue workflow: develop, test, review, merge. Use this skill to work through GitHub issues with minimal user interaction - only pausing when user review/merge is required."
 ---
 
 # GitHub Issue Workflow

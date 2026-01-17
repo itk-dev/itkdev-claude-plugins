@@ -13,7 +13,7 @@ itkdev-claude-plugins/
 ├── commands/                   # Slash commands (Markdown files)
 │   └── example.md
 ├── skills/                     # Skills (Markdown files with frontmatter)
-│   └── itk-dev-github.md
+│   └── itkdev-github-guidelines.md
 └── README.md
 ```
 
@@ -37,7 +37,7 @@ Browser feedback collection tool from [mcp-claude-code-browser-feedback](https:/
 
 ## Included Skills
 
-### itk-dev-github
+### itkdev-github-guidelines
 
 GitHub workflow guidelines for the ITK Dev team. Automatically activates when working with Git, branches, commits, or pull requests. Covers:
 - Branch naming conventions (`feature/issue-{number}-{description}`)

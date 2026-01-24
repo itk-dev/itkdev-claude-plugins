@@ -55,7 +55,7 @@ This plugin automatically releases new versions when MCP server dependencies pub
 
 ### How it works
 
-1. **Weekly Check**: A GitHub Actions workflow runs every Monday at 8:30 UTC
+1. **Daily Check**: A GitHub Actions workflow runs every day at 8:30 UTC
 2. **Version Comparison**: Compares latest MCP releases with tracked versions in `.claude-plugin/mcp-versions.json`
 3. **Automated Release**: If updates are detected, a new patch version is released automatically
 

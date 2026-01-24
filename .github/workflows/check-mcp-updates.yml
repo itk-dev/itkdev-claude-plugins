@@ -2,7 +2,7 @@ name: Check MCP Updates
 
 on:
   schedule:
-    - cron: '30 8 * * 1'  # Weekly Monday 8:30 UTC
+    - cron: '30 8 * * *'  # Daily at 8:30 UTC
   workflow_dispatch:  # Allow manual trigger
 
 jobs:

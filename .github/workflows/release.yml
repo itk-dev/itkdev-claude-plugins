@@ -1,0 +1,94 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      updates_summary:
+        description: 'Summary of MCP updates'
+        required: false
+        type: string
+      browser_feedback_version:
+        description: 'New version of mcp-claude-code-browser-feedback'
+        required: false
+        type: string
+      docker_version:
+        description: 'New version of mcp-itkdev-docker'
+        required: false
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update versions and create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPDATES_SUMMARY: ${{ inputs.updates_summary }}
+          BROWSER_FEEDBACK_VERSION: ${{ inputs.browser_feedback_version }}
+          DOCKER_VERSION: ${{ inputs.docker_version }}
+        run: |
+          set -e
+
+          PLUGIN_JSON=".claude-plugin/plugin.json"
+          MCP_VERSIONS=".claude-plugin/mcp-versions.json"
+
+          # Get current version and bump patch
+          CURRENT_VERSION=$(jq -r '.version' "$PLUGIN_JSON")
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+
+          echo "Bumping version: $CURRENT_VERSION -> $NEW_VERSION"
+
+          # Update plugin.json version
+          jq --arg v "$NEW_VERSION" '.version = $v' "$PLUGIN_JSON" > tmp.json && mv tmp.json "$PLUGIN_JSON"
+
+          # Update mcp-versions.json with new tracked versions
+          if [ -n "$BROWSER_FEEDBACK_VERSION" ] && [ "$BROWSER_FEEDBACK_VERSION" != "none" ]; then
+            jq --arg v "$BROWSER_FEEDBACK_VERSION" '.["mcp-claude-code-browser-feedback"] = $v' "$MCP_VERSIONS" > tmp.json && mv tmp.json "$MCP_VERSIONS"
+          fi
+
+          if [ -n "$DOCKER_VERSION" ] && [ "$DOCKER_VERSION" != "none" ]; then
+            jq --arg v "$DOCKER_VERSION" '.["mcp-itkdev-docker"] = $v' "$MCP_VERSIONS" > tmp.json && mv tmp.json "$MCP_VERSIONS"
+          fi
+
+          # Commit changes
+          git add "$PLUGIN_JSON" "$MCP_VERSIONS"
+          git commit -m "chore: bump version to $NEW_VERSION
+
+          MCP dependency updates:
+          $UPDATES_SUMMARY"
+
+          # Create and push tag
+          TAG="v$NEW_VERSION"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin main
+          git push origin "$TAG"
+
+          # Create GitHub release
+          RELEASE_NOTES="## What's Changed
+
+          This release updates MCP server dependencies:
+
+          $UPDATES_SUMMARY
+
+          ## MCP Versions
+          - mcp-claude-code-browser-feedback: $(jq -r '.["mcp-claude-code-browser-feedback"]' "$MCP_VERSIONS")
+          - mcp-itkdev-docker: $(jq -r '.["mcp-itkdev-docker"]' "$MCP_VERSIONS")"
+
+          gh release create "$TAG" \
+            --title "Release $TAG" \
+            --notes "$RELEASE_NOTES"
+
+          echo "Released version $NEW_VERSION"

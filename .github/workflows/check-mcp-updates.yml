@@ -1,0 +1,82 @@
+name: Check MCP Updates
+
+on:
+  schedule:
+    - cron: '30 8 * * *'  # Daily at 8:30 UTC
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  check-updates:
+    runs-on: ubuntu-latest
+    outputs:
+      has_updates: ${{ steps.check.outputs.has_updates }}
+      updates_summary: ${{ steps.check.outputs.summary }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for MCP updates
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+
+          # Read current tracked versions
+          TRACKED_VERSIONS=".claude-plugin/mcp-versions.json"
+
+          # Get latest release for mcp-claude-code-browser-feedback
+          BROWSER_FEEDBACK_LATEST=$(gh api repos/itk-dev/mcp-claude-code-browser-feedback/releases/latest --jq '.tag_name' 2>/dev/null || echo "none")
+          BROWSER_FEEDBACK_TRACKED=$(jq -r '.["mcp-claude-code-browser-feedback"]' "$TRACKED_VERSIONS")
+
+          # Get latest release for mcp-itkdev-docker
+          DOCKER_LATEST=$(gh api repos/itk-dev/mcp-itkdev-docker/releases/latest --jq '.tag_name' 2>/dev/null || echo "none")
+          DOCKER_TRACKED=$(jq -r '.["mcp-itkdev-docker"]' "$TRACKED_VERSIONS")
+
+          echo "Browser Feedback: tracked=$BROWSER_FEEDBACK_TRACKED, latest=$BROWSER_FEEDBACK_LATEST"
+          echo "Docker: tracked=$DOCKER_TRACKED, latest=$DOCKER_LATEST"
+
+          # Check for updates
+          HAS_UPDATES="false"
+          SUMMARY=""
+
+          if [ "$BROWSER_FEEDBACK_LATEST" != "none" ] && [ "$BROWSER_FEEDBACK_LATEST" != "$BROWSER_FEEDBACK_TRACKED" ]; then
+            HAS_UPDATES="true"
+            SUMMARY="mcp-claude-code-browser-feedback: $BROWSER_FEEDBACK_TRACKED -> $BROWSER_FEEDBACK_LATEST"
+          fi
+
+          if [ "$DOCKER_LATEST" != "none" ] && [ "$DOCKER_LATEST" != "$DOCKER_TRACKED" ]; then
+            HAS_UPDATES="true"
+            if [ -n "$SUMMARY" ]; then
+              SUMMARY="$SUMMARY, "
+            fi
+            SUMMARY="${SUMMARY}mcp-itkdev-docker: $DOCKER_TRACKED -> $DOCKER_LATEST"
+          fi
+
+          echo "has_updates=$HAS_UPDATES" >> "$GITHUB_OUTPUT"
+          echo "summary=$SUMMARY" >> "$GITHUB_OUTPUT"
+          echo "browser_feedback_latest=$BROWSER_FEEDBACK_LATEST" >> "$GITHUB_OUTPUT"
+          echo "docker_latest=$DOCKER_LATEST" >> "$GITHUB_OUTPUT"
+
+          echo "Has updates: $HAS_UPDATES"
+          echo "Summary: $SUMMARY"
+
+      - name: Trigger release
+        if: steps.check.outputs.has_updates == 'true'
+        env:
+          SUMMARY: ${{ steps.check.outputs.summary }}
+          BROWSER_FEEDBACK_LATEST: ${{ steps.check.outputs.browser_feedback_latest }}
+          DOCKER_LATEST: ${{ steps.check.outputs.docker_latest }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'release.yml',
+              ref: 'main',
+              inputs: {
+                updates_summary: process.env.SUMMARY,
+                browser_feedback_version: process.env.BROWSER_FEEDBACK_LATEST,
+                docker_version: process.env.DOCKER_LATEST
+              }
+            })

@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Documentation skill (`itkdev-documentation`) for generating README files and technical documentation
+  - Follows AarhusAI documentation style guidelines
+  - Templates for README, deployment guides, architecture docs, and API documentation
+  - ITK Dev Docker project documentation support
+  - Project type auto-detection
 - Auto-release workflow for MCP dependency updates
   - Daily scheduled check for new MCP releases (8:30 UTC)
   - Automated version bump and release creation when updates detected

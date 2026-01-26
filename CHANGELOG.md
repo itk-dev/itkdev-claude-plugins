@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- ADR (Architecture Decision Record) skill for creating and managing architectural decisions
 - Auto-release workflow for MCP dependency updates
   - Daily scheduled check for new MCP releases (8:30 UTC)
   - Automated version bump and release creation when updates detected

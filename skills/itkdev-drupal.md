@@ -71,6 +71,85 @@ task config:import      # Import Drupal configuration
 
 **Convention:** If a Taskfile.yml exists, prefer `task <name>` over direct `itkdev-docker-compose` commands, as tasks often chain multiple commands and handle edge cases.
 
+## Xdebug
+
+ITK Dev Docker environments include Xdebug for step debugging PHP code.
+
+### Enabling Xdebug
+
+Xdebug is typically controlled via environment variables in the Docker setup:
+
+```bash
+# Check if Xdebug is enabled
+itkdev-docker-compose php -m | grep xdebug
+
+# Enable Xdebug (if using XDEBUG_MODE environment variable)
+# Add to docker-compose.override.yml or .env file:
+XDEBUG_MODE=debug
+```
+
+Common `XDEBUG_MODE` values:
+- `off` - Disable Xdebug (default for performance)
+- `debug` - Enable step debugging
+- `coverage` - Enable code coverage analysis
+- `debug,coverage` - Enable both
+
+### IDE Configuration
+
+#### VS Code
+
+1. Install the **PHP Debug** extension by Xdebug
+2. Create `.vscode/launch.json`:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Listen for Xdebug",
+      "type": "php",
+      "request": "launch",
+      "port": 9003,
+      "pathMappings": {
+        "/app": "${workspaceFolder}"
+      }
+    }
+  ]
+}
+```
+
+#### PHPStorm
+
+1. Go to **Settings → PHP → Servers**
+2. Add a server with:
+   - Host: Your local Docker URL (e.g., `project.docker.localhost`)
+   - Port: 80
+   - Debugger: Xdebug
+   - Path mappings: `/app` → project root
+3. Go to **Settings → PHP → Debug**
+   - Debug port: 9003
+4. Click **Start Listening for PHP Debug Connections**
+
+### Debugging Workflow
+
+1. Set breakpoints in your IDE
+2. Start listening for debug connections
+3. Trigger the code (via browser, drush, or CLI)
+4. Step through code using IDE controls
+
+### Debugging Drush Commands
+
+```bash
+# Run drush with Xdebug enabled
+XDEBUG_MODE=debug itkdev-docker-compose drush <command>
+```
+
+### Troubleshooting
+
+- **Xdebug not connecting**: Check that `xdebug.client_host` points to your host machine (usually `host.docker.internal`)
+- **Wrong path mappings**: Ensure IDE path mappings match Docker volume mounts (typically `/app`)
+- **Performance issues**: Set `XDEBUG_MODE=off` when not debugging
+
 ## Code Audit
 
 When reviewing Drupal code, check for:

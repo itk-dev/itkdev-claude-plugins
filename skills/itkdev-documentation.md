@@ -79,7 +79,7 @@ Follow these conventions based on the [AarhusAI documentation style](https://aar
 
 When generating a README, include these sections as appropriate:
 
-```markdown
+`````markdown
 # Project Name
 
 Brief description of what the project does and its purpose.
@@ -142,13 +142,13 @@ Link to contribution guidelines or brief instructions.
 ## License
 
 License information.
-```
+`````
 
 ## Technical Documentation Templates
 
 ### Deployment Guide Template
 
-```markdown
+`````markdown
 # Deployment Guide
 
 ## Overview
@@ -195,7 +195,7 @@ How to verify the deployment succeeded.
 **Symptom:** Description of the problem.
 
 **Solution:** How to fix it.
-```
+`````
 
 ### Architecture Documentation Template
 
@@ -221,7 +221,7 @@ Include diagrams where helpful (Mermaid, ASCII, or image references).
 
 ### API Documentation Template
 
-```markdown
+`````markdown
 # API Reference
 
 ## Authentication
@@ -253,7 +253,7 @@ How to authenticate with the API.
 ```bash
 curl -X GET https://api.example.com/endpoint
 ```
-```
+`````
 
 ## ITK Dev Docker Projects
 
@@ -261,7 +261,7 @@ For projects using ITK Dev Docker infrastructure, include:
 
 ### Standard README Sections
 
-```markdown
+`````markdown
 ## Development Setup
 
 ### Prerequisites
@@ -300,7 +300,7 @@ For projects using ITK Dev Docker infrastructure, include:
 | Export config | `itkdev-docker-compose drush cex -y` |
 | Import config | `itkdev-docker-compose drush cim -y` |
 | Run tests | `task ci` |
-```
+`````
 
 ### Taskfile Integration
 

@@ -7,6 +7,35 @@ description: Use when creating, updating, or managing Architecture Decision Reco
 
 You are helping create and manage Architecture Decision Records. ADRs capture important architectural decisions along with their context and consequences.
 
+For more information about ADRs, see [adr.github.io](https://adr.github.io/).
+
+## Information Gathering
+
+**Before writing an ADR, ask questions to gather the necessary information.** Use the AskUserQuestion tool to clarify:
+
+1. **What decision needs to be documented?**
+   - What is the problem or challenge being addressed?
+   - What triggered this decision?
+
+2. **Who is involved?**
+   - Who is making the decision?
+   - Who are the stakeholders (advisors and affected parties)?
+
+3. **What options were considered?**
+   - What alternatives were evaluated?
+   - What are the pros and cons of each option?
+
+4. **What was decided and why?**
+   - Which option was chosen?
+   - What is the rationale for this choice?
+
+5. **What are the consequences?**
+   - What are the benefits of this decision?
+   - What are the trade-offs or risks?
+   - Are there follow-up actions needed?
+
+Ask these questions conversationally before drafting the ADR. This ensures all required fields can be properly filled in.
+
 ## When to Create an ADR
 
 Create an ADR when making decisions about:

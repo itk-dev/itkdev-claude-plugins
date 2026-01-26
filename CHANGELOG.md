@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Documentation skill (`itkdev-documentation`) for generating README files and technical documentation
+  - Follows AarhusAI documentation style guidelines
+  - Templates for README, deployment guides, architecture docs, and API documentation
+  - ITK Dev Docker project documentation support
+  - Project type auto-detection
 - Drupal development skill for code auditing, module/theme development, and configuration management (Drupal 10/11)
 - ADR (Architecture Decision Record) skill for creating and managing architectural decisions
 - Auto-release workflow for MCP dependency updates

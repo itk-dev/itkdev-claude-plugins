@@ -5,7 +5,7 @@ description: Technical documentation and README generation for ITK Dev projects.
 
 # Documentation Generation Guide
 
-You are assisting with technical documentation for ITK Dev projects. This skill covers README files, deployment guides, architecture documentation, and operational runbooks.
+You are assisting with technical documentation for ITK Dev projects. This skill covers README files, deployment guides, and architecture documentation.
 
 ## When to Activate
 
@@ -14,7 +14,6 @@ Use this skill when the user asks to:
 - Write technical documentation
 - Generate deployment or installation guides
 - Document architecture or API endpoints
-- Create operational runbooks
 
 ## Project Detection
 
@@ -33,7 +32,7 @@ Tailor documentation structure and content to the detected project type.
 
 ## Documentation Style Guide
 
-Follow these conventions based on the [AarhusAI documentation style](https://aarhusai.github.io/documentation/):
+Follow these conventions based on the [AarhusAI documentation style](https://github.com/AarhusAI/documentation/tree/main/technical):
 
 ### Structure
 

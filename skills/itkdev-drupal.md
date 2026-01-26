@@ -13,7 +13,63 @@ Recognize Drupal projects by:
 - `*.info.yml` files in modules/themes
 - `web/modules` or `web/themes` directory structure
 - `composer.json` with `drupal/core` dependency
-- `drush` commands available
+- `docker-compose.yml` with ITK Dev Docker setup
+- `Taskfile.yml` with defined tasks
+
+## ITK Dev Docker Environment
+
+**IMPORTANT:** ITK Dev projects run in Docker containers. Never run commands directly on the host - always use `itkdev-docker-compose` or Taskfile tasks.
+
+### itkdev-docker-compose Commands
+
+The `itkdev-docker-compose` CLI wraps docker-compose and provides Drupal-specific commands:
+
+```bash
+# Drush (runs inside phpfpm container)
+itkdev-docker-compose drush cr              # Clear cache
+itkdev-docker-compose drush cex -y          # Export config
+itkdev-docker-compose drush cim -y          # Import config
+itkdev-docker-compose drush updb -y         # Run updates
+
+# Composer (runs inside phpfpm container)
+itkdev-docker-compose composer install
+itkdev-docker-compose composer require drupal/module_name
+
+# PHP (runs inside phpfpm container)
+itkdev-docker-compose php script.php
+
+# Database
+itkdev-docker-compose sql:cli               # MySQL CLI
+itkdev-docker-compose sync:db               # Sync database from remote
+itkdev-docker-compose sync:files            # Sync files from remote
+itkdev-docker-compose sync                  # Sync both db and files
+
+# Utilities
+itkdev-docker-compose url                   # Print site URL
+itkdev-docker-compose open                  # Open site in browser
+
+# Any vendor/bin command
+itkdev-docker-compose vendor/bin/phpcs      # Run PHP CodeSniffer
+itkdev-docker-compose vendor/bin/phpunit    # Run PHPUnit
+```
+
+### Taskfile.yml
+
+Projects typically have a `Taskfile.yml` defining common workflows. **Always check for and use Taskfile tasks first** before running raw commands.
+
+Common task patterns:
+```bash
+task                    # List available tasks
+task dev:setup          # Initial project setup
+task dev:reset          # Reset local environment
+task ci                 # Run CI checks (coding standards, tests)
+task ci:coding-standards
+task ci:phpunit
+task config:export      # Export Drupal configuration
+task config:import      # Import Drupal configuration
+```
+
+**Convention:** If a Taskfile.yml exists, prefer `task <name>` over direct `itkdev-docker-compose` commands, as tasks often chain multiple commands and handle edge cases.
 
 ## Code Audit
 
@@ -130,44 +186,43 @@ libraries:
 
 ## Drush Commands
 
-Common commands for development:
+**Always run drush via itkdev-docker-compose** (or use Taskfile tasks if available):
 
 ```bash
 # Cache
-drush cr                          # Clear all caches
-drush cc render                   # Clear render cache only
+itkdev-docker-compose drush cr                    # Clear all caches
+itkdev-docker-compose drush cc render             # Clear render cache only
 
 # Configuration
-drush cex -y                      # Export configuration
-drush cim -y                      # Import configuration
-drush config:get system.site      # Get specific config
+itkdev-docker-compose drush cex -y                # Export configuration
+itkdev-docker-compose drush cim -y                # Import configuration
+itkdev-docker-compose drush config:get system.site  # Get specific config
 
 # Database
-drush sql:dump > backup.sql       # Database backup
-drush sql:cli                     # Database CLI
+itkdev-docker-compose drush sql:dump > backup.sql # Database backup
+itkdev-docker-compose sql:cli                     # Database CLI (direct command)
 
 # Updates
-drush updb -y                     # Run database updates
-drush entity:updates              # Apply entity schema updates
+itkdev-docker-compose drush updb -y               # Run database updates
+itkdev-docker-compose drush entity:updates        # Apply entity schema updates
 
 # Development
-drush en module_name -y           # Enable module
-drush pmu module_name -y          # Uninstall module
-drush cr && drush cim -y          # Common workflow: clear cache + import config
+itkdev-docker-compose drush en module_name -y     # Enable module
+itkdev-docker-compose drush pmu module_name -y    # Uninstall module
 
-# Generate (requires drupal/console or drush generators)
-drush generate module             # Generate module scaffold
-drush generate controller         # Generate controller
+# Generate (requires drush generators)
+itkdev-docker-compose drush generate module       # Generate module scaffold
+itkdev-docker-compose drush generate controller   # Generate controller
 ```
 
 ## Configuration Management
 
 ### Workflow
 1. Make changes in development environment
-2. Export: `drush cex -y`
+2. Export: `task config:export` or `itkdev-docker-compose drush cex -y`
 3. Review changes in `config/sync/`
 4. Commit configuration files
-5. On deployment: `drush cim -y && drush cr`
+5. On deployment: `task config:import` or `itkdev-docker-compose drush cim -y`
 
 ### Config Split
 For environment-specific configuration:
@@ -193,9 +248,11 @@ module_name.settings:
 ## ITK Dev Conventions
 
 When working on ITK Dev Drupal projects:
+- **Always use Docker**: Run all commands via `itkdev-docker-compose` or Taskfile tasks
+- **Check Taskfile.yml first**: Use `task` to list available tasks before running raw commands
 - Follow `itkdev-github-guidelines` for commits and PRs
-- Use ITK Dev Docker setup when available
 - Check for project-specific `CLAUDE.md` guidelines
 - Configuration should be exportable and version controlled
 - Custom modules go in `web/modules/custom/`
 - Custom themes go in `web/themes/custom/`
+- Run `task ci` (or equivalent) before creating PRs to ensure code quality

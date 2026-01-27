@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Skills not loading due to incorrect directory structure (#17)
+  - Restructured skills from flat files (`skills/skill-name.md`) to subdirectories (`skills/skill-name/SKILL.md`)
+  - Matches Claude Code's expected plugin structure
+
 ## [0.3.0] - 2026-01-26
 
 ### Added

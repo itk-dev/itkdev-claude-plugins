@@ -11,13 +11,15 @@ itkdev-claude-plugins/
 │   ├── marketplace.json       # Marketplace catalog
 │   └── mcp-versions.json      # Tracked MCP dependency versions
 ├── .github/workflows/         # GitHub Actions workflows
-│   ├── check-mcp-updates.yml  # Weekly MCP update checker
-│   └── release.yml            # Automated release workflow
+│   ├── check-mcp-updates.yml  # Daily MCP update checker
+│   ├── manual-release.yml     # Manual release workflow
+│   └── release.yml            # MCP dependency release workflow
 ├── .mcp.json                   # MCP server configurations
 ├── commands/                   # Slash commands (Markdown files)
 │   └── example.md
-├── skills/                     # Skills (Markdown files with frontmatter)
-│   └── itkdev-github-guidelines.md
+├── skills/                     # Skills (subdirectories with SKILL.md)
+│   └── itkdev-github-guidelines/
+│       └── SKILL.md
 └── README.md
 ```
 
@@ -49,24 +51,44 @@ GitHub workflow guidelines for the ITK Dev team. Automatically activates when wo
 - Changelog updates (Keep a Changelog format)
 - PR requirements and templates
 
-## Auto-Release Workflow
+## Release Workflows
+
+### Manual Release
+
+Create a new release manually via GitHub Actions:
+
+1. Go to **Actions** > **Manual Release**
+2. Click **Run workflow**
+3. Select version bump type:
+   - `patch` - Bug fixes (0.3.1 → 0.3.2)
+   - `minor` - New features (0.3.1 → 0.4.0)
+   - `major` - Breaking changes (0.3.1 → 1.0.0)
+
+The workflow will:
+- Validate that `[Unreleased]` section has content
+- Update `CHANGELOG.md` with version and date
+- Update `plugin.json` version
+- Create git tag and push
+- Create GitHub release with changelog notes
+
+### MCP Dependency Auto-Release
 
 This plugin automatically releases new versions when MCP server dependencies publish updates.
 
-### How it works
+#### How it works
 
 1. **Daily Check**: A GitHub Actions workflow runs every day at 8:30 UTC
 2. **Version Comparison**: Compares latest MCP releases with tracked versions in `.claude-plugin/mcp-versions.json`
 3. **Automated Release**: If updates are detected, a new patch version is released automatically
 
-### Tracked Dependencies
+#### Tracked Dependencies
 
 | MCP Server | Repository |
 |------------|------------|
 | browser-feedback | [mcp-claude-code-browser-feedback](https://github.com/itk-dev/mcp-claude-code-browser-feedback) |
 | docker | [mcp-itkdev-docker](https://github.com/itk-dev/mcp-itkdev-docker) |
 
-### Manual Trigger
+#### Manual MCP Check
 
 You can manually trigger a dependency check via the GitHub Actions UI:
 1. Go to **Actions** > **Check MCP Updates**
@@ -95,11 +117,17 @@ Create new Markdown files in the `commands/` directory. Each file becomes a slas
 
 ### Adding Skills
 
-Create new Markdown files in the `skills/` directory with YAML frontmatter:
+Create a subdirectory in `skills/` with a `SKILL.md` file containing YAML frontmatter:
+
+```
+skills/
+└── your-skill-name/
+    └── SKILL.md
+```
 
 ```markdown
 ---
-name: skill-name
+name: your-skill-name
 description: When this skill should be activated automatically.
 ---
 

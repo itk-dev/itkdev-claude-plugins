@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Manual release workflow for creating releases via GitHub Actions UI
+  - Supports patch, minor, and major version bumps
+  - Automatically updates CHANGELOG.md and plugin.json
+  - Creates git tag and GitHub release with notes from changelog
+
 ## [0.3.1] - 2026-01-27
 
 ### Fixed

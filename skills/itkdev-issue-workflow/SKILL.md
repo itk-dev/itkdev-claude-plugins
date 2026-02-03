@@ -19,9 +19,45 @@ You are an autonomous developer working through GitHub issues. Work with MINIMAL
 3. For non-trivial tasks, use EnterPlanMode to plan implementation
 4. Implement the solution following CLAUDE.md guidelines
 5. Update CHANGELOG.md with the changes
-6. Run `task ci` and fix any issues until CI passes
+6. Run CI checks (see "Tool Detection Strategy" section below):
+   
+   **Step A - Detect available tools:**
+   - Run `task` to list available Taskfile tasks (if Taskfile.yml exists)
+   - Run `itkdev-docker-compose composer run --list` to see composer scripts
+   
+   **Step B - Apply coding standards fixes first (auto-fix before checking):**
+   - Preferred: `task coding-standards:apply`
+   - Fallback: `itkdev-docker-compose composer run phpcbf` (if script exists)
+   - Fallback: `itkdev-docker-compose vendor/bin/phpcbf`
+   
+   **Step C - Run full CI checks:**
+   - Preferred: `task ci` (runs all checks)
+   - If `task ci` doesn't exist, run checks individually:
+     - `task ci:coding-standards` or `itkdev-docker-compose vendor/bin/phpcs`
+     - `task ci:phpunit` or `itkdev-docker-compose vendor/bin/phpunit`
+     - `itkdev-docker-compose composer run phpstan` (if available)
+   
+   **Step D - Fix any remaining issues and repeat until all checks pass**
+
 7. Commit changes with descriptive message referencing the issue
-8. Push branch and create PR with proper format
+8. Push branch and create PR:
+   ```bash
+   git push -u origin <branch-name>
+   gh pr create --title "Issue #<number>: <short description>" --body "$(cat <<'EOF'
+   ## Summary
+   <Brief description of what was implemented>
+   
+   ## Changes
+   - <List key changes made>
+   
+   ## Testing
+   - <How the changes were tested>
+   
+   Fixes #<issue-number>
+   EOF
+   )"
+   ```
+   Store the PR number for use in Phase 5.
 
 ## PHASE 3: Automated Testing (AUTONOMOUS)
 Automatically test based on the type of change:
@@ -85,11 +121,60 @@ done
    I suggest we tackle #XX next because [reason]. Should I start working on it?"
 4. If user confirms, immediately start Phase 1 with that issue number.
 
+## Tool Detection Strategy
+
+Before running CI commands, detect what's available in the project:
+
+### 1. Check for Taskfile
+```bash
+if [ -f "Taskfile.yml" ] || [ -f "Taskfile.yaml" ]; then
+  task --list  # Shows available tasks
+fi
+```
+
+### 2. Check composer.json scripts
+```bash
+itkdev-docker-compose composer run --list
+```
+
+### 3. Common Taskfile task names to look for
+| Task | Purpose |
+|------|---------|
+| `task ci` | Full CI suite (coding standards + tests) |
+| `task ci:coding-standards` | Coding standards check only |
+| `task ci:phpunit` | PHPUnit tests only |
+| `task coding-standards:apply` | Auto-fix coding standards issues |
+| `task config:export` | Export Drupal configuration |
+| `task config:import` | Import Drupal configuration |
+| `task dev:setup` | Initial project setup |
+| `task dev:reset` | Reset local environment |
+
+### 4. Common composer scripts to look for
+| Script | Purpose |
+|--------|---------|
+| `phpcs` | PHP CodeSniffer - check coding standards |
+| `phpcbf` | PHP Code Beautifier - auto-fix standards |
+| `phpunit` / `test` | Run PHPUnit tests |
+| `phpstan` / `analyze` | Static analysis |
+| `coding-standards` | Combined standards check |
+| `coding-standards:check` | Check only (no fix) |
+| `coding-standards:apply` | Apply/fix standards |
+
+### 5. Direct itkdev-docker-compose fallbacks
+When no task or composer script exists, run tools directly:
+```bash
+itkdev-docker-compose vendor/bin/phpcs      # Coding standards
+itkdev-docker-compose vendor/bin/phpcbf     # Auto-fix standards
+itkdev-docker-compose vendor/bin/phpunit    # PHPUnit tests
+itkdev-docker-compose vendor/bin/phpstan    # Static analysis
+```
+
 ## Important Rules
 - Work AUTONOMOUSLY through phases 1-4 without asking for confirmation
 - Only pause at Phase 5 for user review/merge
 - Always follow CLAUDE.md guidelines
 - Never commit directly to main
-- Always run `task ci` before creating PR
+- Always run CI checks before creating PR (use tool detection strategy)
+- Apply coding standards fixes BEFORE running checks (saves time)
 - Fix issues found by automated testing and review without asking
 - Be efficient - don't ask unnecessary questions

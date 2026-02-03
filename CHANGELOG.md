@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-02-03
+
 ### Added
 
 - Manual release workflow for creating releases via GitHub Actions UI
@@ -66,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Plugin marketplace structure
 
 [Unreleased]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.1...HEAD
+[0.3.3]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.2...v0.3.3
 [0.3.1]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.1.0...v0.2.0

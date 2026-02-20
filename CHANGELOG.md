@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Updated `plugin.json` with full metadata (author, repository, license, keywords)
+- Updated README to document all 5 skills, both MCP servers, and correct directory structure
+
+### Removed
+
+- Removed legacy `commands/` directory (content already covered by `itkdev-github-guidelines` skill)
+
 ## [0.3.3] - 2026-02-03
 
 ### Added

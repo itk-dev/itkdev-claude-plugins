@@ -16,6 +16,7 @@ itkdev-claude-plugins/
 │   └── release.yml            # MCP dependency release workflow
 ├── .mcp.json                   # MCP server configurations
 ├── agents/                     # Agents (flat .md files)
+│   ├── itkdev-code-review.md
 │   └── itkdev-issue-workflow.md
 ├── skills/                     # Skills (subdirectories with SKILL.md)
 │   ├── itkdev-adr/
@@ -75,6 +76,10 @@ GitHub workflow guidelines for the ITK Dev team. Automatically activates when wo
 Autonomous GitHub issue workflow. Works through GitHub issues with minimal user interaction — handling development, testing, review, and merge — only pausing when user review or merge approval is required.
 
 ## Included Agents
+
+### itkdev-code-review
+
+Code review agent for pull requests. Reviews PRs against ITK Dev standards — checking branch naming, commit messages, CHANGELOG updates, PR description, CI status, and code quality. Produces a structured report with severity levels (Critical, Warning, Suggestion) and a verdict. Read-only: never modifies code, pushes, or merges. Preloads both `itkdev-github-guidelines` and `itkdev-drupal` skills, applying Drupal-specific checks only when a Drupal project is detected.
 
 ### itkdev-issue-workflow
 

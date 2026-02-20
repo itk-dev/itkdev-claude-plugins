@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `itkdev-code-review` agent for automated PR review against ITK Dev standards (`agents/itkdev-code-review.md`)
 - `itkdev-issue-workflow` agent for autonomous GitHub issue workflows (`agents/itkdev-issue-workflow.md`)
   - Runs in isolated subagent context, auto-delegated by Claude
   - Preloads `itkdev-github-guidelines` skill for team Git conventions

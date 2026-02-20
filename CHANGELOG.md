@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `itkdev-issue-workflow` agent for autonomous GitHub issue workflows (`agents/itkdev-issue-workflow.md`)
+  - Runs in isolated subagent context, auto-delegated by Claude
+  - Preloads `itkdev-github-guidelines` skill for team Git conventions
+  - Uses project memory for cross-session codebase knowledge
+  - Coexists with the existing `/itkdev-issue-workflow` skill
+
 ### Changed
 
 - Updated `plugin.json` with full metadata (author, repository, license, keywords)

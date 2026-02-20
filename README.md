@@ -15,6 +15,8 @@ itkdev-claude-plugins/
 │   ├── manual-release.yml     # Manual release workflow
 │   └── release.yml            # MCP dependency release workflow
 ├── .mcp.json                   # MCP server configurations
+├── agents/                     # Agents (flat .md files)
+│   └── itkdev-issue-workflow.md
 ├── skills/                     # Skills (subdirectories with SKILL.md)
 │   ├── itkdev-adr/
 │   ├── itkdev-documentation/
@@ -71,6 +73,14 @@ GitHub workflow guidelines for the ITK Dev team. Automatically activates when wo
 ### itkdev-issue-workflow
 
 Autonomous GitHub issue workflow. Works through GitHub issues with minimal user interaction — handling development, testing, review, and merge — only pausing when user review or merge approval is required.
+
+## Included Agents
+
+### itkdev-issue-workflow
+
+Autonomous GitHub issue workflow agent. Runs as an isolated subagent with its own context, auto-delegated by Claude when working through GitHub issues end-to-end. Handles development, testing, code review, and merge with minimal user interaction. Preloads the `itkdev-github-guidelines` skill and uses project memory to build codebase knowledge across sessions.
+
+> **Skill vs Agent:** The skill (`/itkdev-issue-workflow`) injects instructions into your main conversation. The agent runs in isolated context and is auto-delegated by Claude when appropriate. Both coexist — use the skill for interactive control, or let Claude delegate to the agent for fully autonomous operation.
 
 ## Release Workflows
 
@@ -152,3 +162,28 @@ description: When this skill should be activated automatically.
 
 Your skill instructions here...
 ```
+
+### Adding Agents
+
+Create a flat `.md` file in `agents/` with YAML frontmatter:
+
+```
+agents/
+└── your-agent-name.md
+```
+
+```markdown
+---
+name: your-agent-name
+description: When this agent should be auto-delegated.
+skills:
+  - skill-to-preload
+memory: project
+---
+
+# Agent System Prompt
+
+Your agent instructions here...
+```
+
+Agents run in isolated context with their own system prompt and are auto-delegated by Claude. Use agents for autonomous, multi-step workflows that benefit from isolated context.

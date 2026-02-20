@@ -1,5 +1,12 @@
 {
   "name": "itkdev-tools",
   "description": "ITK Dev tools and MCP servers for Claude Code",
-  "version": "0.3.3"
+  "version": "0.3.3",
+  "author": {
+    "name": "ITK Dev",
+    "email": "itkdev@mkb.aarhus.dk"
+  },
+  "repository": "https://github.com/itk-dev/itkdev-claude-plugins",
+  "license": "MIT",
+  "keywords": ["itk-dev", "drupal", "github", "docker", "documentation"]
 }

@@ -15,11 +15,12 @@ itkdev-claude-plugins/
 │   ├── manual-release.yml     # Manual release workflow
 │   └── release.yml            # MCP dependency release workflow
 ├── .mcp.json                   # MCP server configurations
-├── commands/                   # Slash commands (Markdown files)
-│   └── example.md
 ├── skills/                     # Skills (subdirectories with SKILL.md)
-│   └── itkdev-github-guidelines/
-│       └── SKILL.md
+│   ├── itkdev-adr/
+│   ├── itkdev-documentation/
+│   ├── itkdev-drupal/
+│   ├── itkdev-github-guidelines/
+│   └── itkdev-issue-workflow/
 └── README.md
 ```
 
@@ -41,7 +42,23 @@ Team members can install the marketplace and plugins with:
 
 Browser feedback collection tool from [mcp-claude-code-browser-feedback](https://github.com/itk-dev/mcp-claude-code-browser-feedback).
 
+### itkdev-docker
+
+Docker environment management for ITK Dev projects from [mcp-itkdev-docker](https://github.com/itk-dev/mcp-itkdev-docker). Provides template detection, comparison, and setup tools for ITK Dev Docker configurations.
+
 ## Included Skills
+
+### itkdev-adr
+
+Architecture Decision Record management. Activates when creating, updating, or managing ADRs and documenting architectural decisions.
+
+### itkdev-documentation
+
+Technical documentation and README generation for ITK Dev projects. Covers README files, deployment guides, architecture docs, and API documentation following ITK Dev documentation standards.
+
+### itkdev-drupal
+
+Drupal 10/11 development assistance. Covers code auditing, module/theme development, drush commands, configuration management, and ITK Dev Docker environment integration.
 
 ### itkdev-github-guidelines
 
@@ -50,6 +67,10 @@ GitHub workflow guidelines for the ITK Dev team. Automatically activates when wo
 - Conventional commit messages
 - Changelog updates (Keep a Changelog format)
 - PR requirements and templates
+
+### itkdev-issue-workflow
+
+Autonomous GitHub issue workflow. Works through GitHub issues with minimal user interaction — handling development, testing, review, and merge — only pausing when user review or merge approval is required.
 
 ## Release Workflows
 
@@ -86,7 +107,7 @@ This plugin automatically releases new versions when MCP server dependencies pub
 | MCP Server | Repository |
 |------------|------------|
 | browser-feedback | [mcp-claude-code-browser-feedback](https://github.com/itk-dev/mcp-claude-code-browser-feedback) |
-| docker | [mcp-itkdev-docker](https://github.com/itk-dev/mcp-itkdev-docker) |
+| itkdev-docker | [mcp-itkdev-docker](https://github.com/itk-dev/mcp-itkdev-docker) |
 
 #### Manual MCP Check
 
@@ -110,10 +131,6 @@ Edit `.mcp.json` to add new MCP server configurations:
   }
 }
 ```
-
-### Adding Commands
-
-Create new Markdown files in the `commands/` directory. Each file becomes a slash command.
 
 ### Adding Skills
 

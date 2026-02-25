@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `itkdev-statusline` plugin with context window usage, git branch, and plan progress display
+- `itkdev-statusline` extension with context window usage, git branch, and plan progress display
 
 ## [0.4.0] - 2026-02-20
 

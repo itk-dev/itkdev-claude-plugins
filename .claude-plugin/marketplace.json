@@ -15,7 +15,7 @@
     {
       "name": "itkdev-statusline",
       "description": "Claude Code statusline with git branch, plan progress, and context window usage",
-      "source": "./plugins/itkdev-statusline"
+      "source": "./extensions/itkdev-statusline"
     }
   ]
 }

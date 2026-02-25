@@ -18,6 +18,8 @@ itkdev-claude-plugins/
 ├── agents/                     # Agents (flat .md files)
 │   ├── itkdev-code-review.md
 │   └── itkdev-issue-workflow.md
+├── extensions/                 # Extensions (standalone tools)
+│   └── itkdev-statusline/
 ├── skills/                     # Skills (subdirectories with SKILL.md)
 │   ├── itkdev-adr/
 │   ├── itkdev-documentation/
@@ -74,6 +76,12 @@ GitHub workflow guidelines for the ITK Dev team. Automatically activates when wo
 ### itkdev-issue-workflow
 
 Autonomous GitHub issue workflow. Works through GitHub issues with minimal user interaction — handling development, testing, review, and merge — only pausing when user review or merge approval is required.
+
+## Included Extensions
+
+### itkdev-statusline
+
+Claude Code statusline displaying git branch, plan/task progress, and context window usage. Install with `/setup-statusline` after adding the marketplace. See [extensions/itkdev-statusline/README.md](extensions/itkdev-statusline/README.md) for details.
 
 ## Included Agents
 
@@ -167,6 +175,23 @@ description: When this skill should be activated automatically.
 
 Your skill instructions here...
 ```
+
+### Adding Extensions
+
+Create a subdirectory in `extensions/` with its own `.claude-plugin/plugin.json` and any commands or scripts:
+
+```
+extensions/
+└── your-extension-name/
+    ├── .claude-plugin/
+    │   └── plugin.json
+    ├── bin/
+    │   └── your-script.sh
+    └── commands/
+        └── setup-your-extension.md
+```
+
+Extensions are standalone tools (statuslines, utilities, setup scripts) that don't fit the skill/agent/MCP categories but benefit from marketplace distribution.
 
 ### Adding Agents
 

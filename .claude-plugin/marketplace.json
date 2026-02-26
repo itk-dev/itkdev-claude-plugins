@@ -11,6 +11,11 @@
       "name": "itkdev-tools",
       "description": "ITK Dev tools and MCP servers for Claude Code",
       "source": "./"
+    },
+    {
+      "name": "itkdev-statusline",
+      "description": "Claude Code statusline with git branch, plan progress, and context window usage",
+      "source": "./extensions/itkdev-statusline"
     }
   ]
 }

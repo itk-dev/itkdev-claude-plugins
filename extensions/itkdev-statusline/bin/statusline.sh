@@ -30,7 +30,11 @@ if [[ -f "$head_file" ]]; then
   else
     branch="${head_content:0:7}"  # detached HEAD — short hash
   fi
-  segments+=("$branch")
+  if [[ -z "$(git -C "$cwd" status --porcelain 2>/dev/null)" ]]; then
+    segments+=($'\033[32m'"${branch}"$'\033[0m')   # green = clean
+  else
+    segments+=($'\033[31m'"${branch}"$'\033[0m')   # red = dirty
+  fi
 fi
 
 # ── Plan progress ──────────────────────────────────────────────────────
@@ -58,7 +62,11 @@ if [[ -d "$plan_dir" ]]; then
     total="${total:-0}"
     done="${done:-0}"
     if (( total > 0 )); then
-      segments+=("${done}/${total}")
+      if (( done == total )); then
+        segments+=($'\033[32m'"${done}/${total}"$'\033[0m')   # green = complete
+      else
+        segments+=("${done}/${total}")
+      fi
     fi
   fi
 fi
@@ -81,7 +89,11 @@ if [[ -n "${transcript:-}" && -f "$transcript" ]]; then
     task_done="${task_counts%% *}"
     task_total="${task_counts##* }"
     if (( task_total > 0 )); then
-      segments+=("${task_done}/${task_total}")
+      if (( task_done == task_total )); then
+        segments+=($'\033[32m'"${task_done}/${task_total}"$'\033[0m')   # green = complete
+      else
+        segments+=("${task_done}/${task_total}")
+      fi
     fi
   fi
 fi

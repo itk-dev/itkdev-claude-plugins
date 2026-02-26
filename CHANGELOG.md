@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `validate-itkdev-standards` skill for auditing projects against itk-dev Docker and development conventions (`skills/validate-itkdev-standards/SKILL.md`)
+- `itkdev-validate-standards` skill for auditing projects against itk-dev Docker and development conventions (`skills/itkdev-validate-standards/SKILL.md`)
   - Automated comparison via `itkdev-docker` MCP tools (detect, compare, fetch template content)
   - 9-area validation checklist: Docker Compose, server compose, environment, Taskfile, Symfony/PHP config, Composer, GitHub Actions, and miscellaneous files
   - Remediation tables for each validation area

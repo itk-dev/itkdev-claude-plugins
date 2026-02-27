@@ -6,7 +6,7 @@ description: |
   "check itk-dev standards", (3) reviewing PR for convention compliance,
   (4) setting up a new itk-dev project, (5) upgrading Docker configuration.
   Walks through 9 validation areas: MCP tool comparison, docker-compose,
-  server compose, environment, Taskfile, Symfony/PHP config, Composer,
+  server compose, environment, Taskfile, framework-specific config, Composer,
   GitHub Actions, and miscellaneous files.
 author: Claude Code
 version: 1.0.0
@@ -20,14 +20,14 @@ itk-dev projects must follow conventions from the
 `itk-dev/devops_itkdev-docker` template repository. Manually checking
 compliance across Docker Compose files, Taskfile, GitHub Actions, PHP
 tooling, and environment configuration is error-prone. This skill
-provides a structured checklist to audit any Symfony project.
+provides a structured checklist to audit any itk-dev project.
 
 ## Context / Trigger Conditions
 
 Use this skill when:
 - Auditing a project for itk-dev convention compliance
 - Reviewing a PR that changes Docker, Taskfile, or CI configuration
-- Setting up a new itk-dev Symfony project
+- Setting up a new itk-dev project
 - Upgrading from older itk-dev Docker conventions
 - User asks to "check itk-dev standards" or "validate Docker setup"
 
@@ -71,6 +71,23 @@ file-level diffs against the canonical template.
 **Fallback:** If MCP tools are unavailable or the project is not detected,
 proceed with the manual checklist below.
 
+#### Project Type Classification
+
+Use the detected template name to classify the project:
+
+| Detected Template | Project Type | Steps with Conditional Checks |
+|-------------------|-------------|-------------------------------|
+| `symfony-*`       | Symfony     | Steps 4, 5, 7 include Symfony-specific checks |
+| `drupal-*`        | Drupal      | Steps 4, 5, 7 include Drupal-specific checks |
+| Other / unknown   | Generic     | Steps 4, 5, 7 use minimal universal checks only |
+
+#### Project Exceptions
+
+Deviations from these standards that are documented in the project's `CLAUDE.md`
+or memory files should be treated as acknowledged exceptions, not failures.
+When a check fails but the deviation is documented, report it as
+**"Exception (documented)"** in the summary rather than a failure.
+
 ---
 
 ### Step 1 — Docker Compose (`docker-compose.yml`)
@@ -87,12 +104,17 @@ Validate the development Docker Compose file.
 - [ ] `phpfpm` uses `itkdev/php8.4-fpm:latest` (or appropriate PHP version)
 - [ ] `mariadb` uses `itkdev/mariadb:latest`
 - [ ] `nginx` uses `nginxinc/nginx-unprivileged:alpine`
-- [ ] `worker` uses `itkdev/supervisor-php8.4:alpine` (matching PHP version)
+- [ ] If `worker` service is present: uses `itkdev/supervisor-php8.4:alpine`
+  (matching PHP version)
 
 #### Service Names
 
-- [ ] Services named: `phpfpm`, `mariadb`, `nginx`, `worker`
-  (plus any project-specific services)
+Core services (required):
+- [ ] `phpfpm`, `mariadb`, `nginx`
+
+Optional services (check if present):
+- [ ] `worker` — only required for projects using background job processing
+- [ ] Other project-specific services
 
 #### Healthchecks
 
@@ -101,7 +123,8 @@ Validate the development Docker Compose file.
 - [ ] `phpfpm` healthcheck tests TCP port 9000
 - [ ] `mariadb` healthcheck uses `healthcheck.sh --connect --innodb_initialized`
 - [ ] `nginx` depends_on phpfpm with `condition: service_healthy`
-- [ ] `worker` depends_on mariadb and phpfpm with `condition: service_healthy`
+- [ ] If `worker` service is present: depends_on mariadb and phpfpm with
+  `condition: service_healthy`
 
 #### Volumes
 
@@ -117,6 +140,12 @@ Validate the development Docker Compose file.
 #### Dev Profile Services
 
 - [ ] `node`, `markdownlint`, `prettier` services have `profiles: [dev]`
+
+> **Note:** Dev profile services (`node`, `markdownlint`, `prettier`) are
+> typically defined in `docker-compose.override.yml` for local customization.
+> If they only appear in the override file, the check passes automatically.
+> `docker-compose.override.yml` is used for local development customization
+> and is not subject to the same strict validation.
 
 #### Remediation
 
@@ -195,37 +224,44 @@ Validate task runner configuration.
 - [ ] `DOCKER_COMPOSE` defined (supports override via `CONTAINER_COMPOSE`)
 - [ ] `PHP` defined as `{{.DOCKER_COMPOSE}} exec phpfpm`
 - [ ] `COMPOSER` defined as `{{.PHP}} composer`
-- [ ] `CONSOLE` defined as `{{.PHP}} bin/console`
-- [ ] `NODE` defined as `{{.DOCKER_COMPOSE}} run --rm node`
 
-#### Required Tasks
+Conditional variables:
+- [ ] If Symfony: `CONSOLE` defined as `{{.PHP}} bin/console`
+- [ ] If Drupal: `DRUSH` defined as `{{.PHP}} vendor/bin/drush`
+- [ ] If project uses Node: `NODE` defined as `{{.DOCKER_COMPOSE}} run --rm node`
 
-- [ ] `setup` — first-time project setup (calls up, install, build, migrate)
-- [ ] `up` — start containers and run migrations
+#### Required Tasks (all project types)
+
+- [ ] `compose`/`up` — start containers
 - [ ] `down` — stop containers (`{{.DOCKER_COMPOSE}} down`)
+- [ ] A dependency install task (e.g., `install`, `composer:install`)
+
+#### Symfony-Specific Tasks (if detected as Symfony)
+
+- [ ] `lint:twig` — Twig CS Fixer lint
+- [ ] `lint:twig:fix` — Twig CS Fixer fix
+- [ ] `analyze` — PHPStan analyse
+
+#### Drupal-Specific Tasks (if detected as Drupal)
+
+- [ ] `drush` — Run Drush commands
+- [ ] Config import/export tasks
+
+#### Optional / Recommended Tasks
+
+The following tasks are recommended but not strictly required. Their absence
+should be noted as suggestions, not failures:
+
+- [ ] `setup` — first-time project setup
 - [ ] `restart` — calls down then up
-- [ ] `install` — install all dependencies (composer + assets)
 - [ ] `ci` — run all CI checks
 - [ ] `lint` — run all linters (calls subtasks)
 - [ ] `lint:php` — PHP CS Fixer dry-run
 - [ ] `lint:php:fix` — PHP CS Fixer fix
-- [ ] `lint:twig` — Twig CS Fixer lint
-- [ ] `lint:twig:fix` — Twig CS Fixer fix
 - [ ] `lint:composer` — composer validate + normalize dry-run
 - [ ] `lint:markdown` — markdown lint via container
 - [ ] `lint:styles` — Prettier check on CSS/SCSS
-- [ ] `analyze` — PHPStan analyse
 - [ ] `test` — PHPUnit all tests
-
-#### CI Task Order
-
-- [ ] `ci` runs in order: `assets:build` -> `lint` -> `analyze` -> `test`
-
-#### Internal Tasks
-
-- [ ] `db:migrate` is `internal: true`
-- [ ] `network:frontend` check task exists and is `internal: true`
-- [ ] `up` is split: `up:start` (infrastructure) + `up:worker` (worker container)
 
 #### Remediation
 
@@ -233,17 +269,19 @@ Validate task runner configuration.
 |-------|-----|
 | Missing dotenv | Add `dotenv: [".env.local", ".env"]` |
 | Wrong var names | Rename to match standard: `DOCKER_COMPOSE`, `PHP`, etc. |
-| Missing task | Add task following the patterns in the template |
-| `db:migrate` not internal | Add `internal: true` to prevent direct invocation |
-| CI order wrong | Reorder cmds: assets:build, lint, analyze, test |
+| Missing required task | Add task following the patterns in the template |
 
 ---
 
-### Step 5 — Symfony/PHP Config
+### Step 5 — Framework-Specific Config
 
-Validate PHP tooling configuration.
+Validate PHP tooling configuration. Checks are conditional on project type.
+For project types other than Symfony or Drupal, skip this step and report
+as "N/A" in the summary.
 
-#### PHP CS Fixer (`.php-cs-fixer.dist.php`)
+#### For Symfony Projects
+
+**PHP CS Fixer (`.php-cs-fixer.dist.php`)**
 
 - [ ] File exists at project root
 - [ ] Rules include `@Symfony` and `@PHP84Migration`
@@ -251,25 +289,39 @@ Validate PHP tooling configuration.
 - [ ] Finder uses `ignoreVCSIgnored(true)`
 - [ ] Header comment references `itk-dev/devops_itkdev-docker` origin
 
-#### PHPStan (`phpstan.dist.neon`)
+**PHPStan (`phpstan.dist.neon`)**
 
 - [ ] File exists at project root
 - [ ] Level is 6 (or higher)
 - [ ] `paths` includes `src`
 - [ ] `excludePaths` includes `src/Kernel.php`
 
-#### PHP Code Conventions
+**PHP Code Conventions**
 
 - [ ] All PHP files have `declare(strict_types=1)`
 - [ ] Classes use `final class` pattern (where appropriate)
+
+#### For Drupal Projects
+
+**PHP CS Fixer (`.php-cs-fixer.dist.php`)**
+
+- [ ] File exists at project root
+- [ ] Finder targets `web/modules/custom` and `web/themes/custom`
+- [ ] Finder uses `ignoreVCSIgnored(true)`
+
+**PHPStan (`phpstan.dist.neon`)**
+
+- [ ] File exists at project root
+- [ ] Level is 6 (or higher)
+- [ ] `paths` includes `web/modules/custom` and/or `web/themes/custom`
 
 #### Remediation
 
 | Check | Fix |
 |-------|-----|
-| Missing `.php-cs-fixer.dist.php` | Copy from template, adjust finder excludes |
+| Missing `.php-cs-fixer.dist.php` | Copy from template, adjust finder for project type |
 | Wrong PHPStan level | Set `level: 6` in `phpstan.dist.neon` |
-| Missing `Kernel.php` exclude | Add to `excludePaths` in PHPStan config |
+| Wrong PHPStan paths | Adjust `paths` to match project type (`src` for Symfony, `web/modules/custom` for Drupal) |
 
 ---
 
@@ -299,14 +351,19 @@ Validate CI workflow files.
 
 #### Expected Workflow Files
 
+Universal (all project types):
 - [ ] `.github/workflows/changelog.yaml`
 - [ ] `.github/workflows/composer.yaml`
-- [ ] `.github/workflows/javascript.yaml`
 - [ ] `.github/workflows/markdown.yaml`
 - [ ] `.github/workflows/php.yaml`
-- [ ] `.github/workflows/styles.yaml`
-- [ ] `.github/workflows/twig.yaml`
 - [ ] `.github/workflows/yaml.yaml`
+
+Symfony additionally:
+- [ ] `.github/workflows/twig.yaml`
+
+Projects with JS/CSS assets:
+- [ ] `.github/workflows/javascript.yaml`
+- [ ] `.github/workflows/styles.yaml`
 
 #### Workflow Content Standards
 
@@ -372,7 +429,7 @@ Date: <current date>
 | Step 2: Server compose   |   /    |   0    |
 | Step 3: Environment      |   /    |   0    |
 | Step 4: Taskfile          |   /    |   0    |
-| Step 5: Symfony/PHP       |   /    |   0    |
+| Step 5: Framework Config  |   /    |   0    |
 | Step 6: Composer          |   /    |   0    |
 | Step 7: GitHub Actions    |   /    |   0    |
 | Step 8: Miscellaneous     |   /    |   0    |
@@ -381,9 +438,14 @@ Date: <current date>
 
 (List any failing checks with remediation steps)
 
+### Documented Exceptions
+
+(List any checks that failed but have documented justification in CLAUDE.md
+or project memory files — these are acknowledged deviations, not failures)
+
 ### Summary
 
-X/Y checks passed. [COMPLIANT | NEEDS FIXES]
+X/Y checks passed, Z documented exceptions. [COMPLIANT | NEEDS FIXES]
 ```
 
 ## Common Issues
@@ -443,7 +505,7 @@ Date: 2026-02-26
 | Step 2: Server compose   | PASS   |   0    |
 | Step 3: Environment      | PASS   |   0    |
 | Step 4: Taskfile          | PASS   |   0    |
-| Step 5: Symfony/PHP       | PASS   |   0    |
+| Step 5: Framework Config  | PASS   |   0    |
 | Step 6: Composer          | PASS   |   0    |
 | Step 7: GitHub Actions    | PASS   |   0    |
 | Step 8: Miscellaneous     | PASS   |   0    |

@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `itkdev-statusline` extension with context window usage, git branch, and plan progress display
+- `itkdev-validate-standards` skill for auditing projects against itk-dev Docker and development conventions (`skills/itkdev-validate-standards/SKILL.md`)
+  - Project-type detection (Symfony, Drupal, generic) with conditional checks per type
+  - Automated comparison via `itkdev-docker` MCP tools (detect, compare, fetch template content)
+  - 9-area validation checklist: Docker Compose, server compose, environment, Taskfile, framework-specific config, Composer, GitHub Actions, and miscellaneous files
+  - Conditional framework-specific checks (Symfony Twig/PHPStan paths, Drupal custom module paths)
+  - Support for documented project exceptions via `CLAUDE.md` or memory files
+  - Remediation tables for each validation area
+  - Summary report generation
 
 ## [0.4.0] - 2026-02-20
 

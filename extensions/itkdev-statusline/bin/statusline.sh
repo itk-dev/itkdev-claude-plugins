@@ -8,11 +8,13 @@ set -euo pipefail
 # Parse cwd and context percentage from stdin JSON via a single jq call.
 # Prefer remaining_percentage (matches Claude Code's native context display)
 # over used_percentage, which excludes reserved overhead and can differ.
-tsv=$(jq -r '[(.cwd // ""), (if (.context_window.remaining_percentage // null) != null then (100 - .context_window.remaining_percentage) | floor else (.context_window.used_percentage // 0) end), (.transcript_path // "")] | @tsv' 2>/dev/null) || true
+tsv=$(jq -r '[(.cwd // ""), (if (.context_window.remaining_percentage // null) != null then (100 - .context_window.remaining_percentage) | floor else (.context_window.used_percentage // 0) end), (.transcript_path // ""), (.workspace.project_dir // "")] | @tsv' 2>/dev/null) || true
 cwd="${tsv%%$'\t'*}"
 rest="${tsv#*$'\t'}"
 pct="${rest%%$'\t'*}"
-transcript="${rest#*$'\t'}"
+rest2="${rest#*$'\t'}"
+transcript="${rest2%%$'\t'*}"
+project_dir="${rest2#*$'\t'}"
 
 # Bail if we got nothing useful.
 [[ -z "${cwd:-}" ]] && exit 0
@@ -22,8 +24,35 @@ pct="${pct:-0}"
 
 segments=()
 
+# ── Project identifier ───────────────────────────────────────────────
+# Prefer workspace.project_dir over cwd (avoids subdirectory basenames).
+proj_root="${project_dir:-$cwd}"
+project_name=""
+
+# Try git remote origin name first (more meaningful than directory name).
+git_config="${proj_root}/.git/config"
+if [[ -f "$git_config" ]]; then
+  while IFS= read -r line; do
+    case "$line" in
+      *url\ =*)
+        remote_url="${line##*= }"
+        project_name="${remote_url##*/}"
+        project_name="${project_name%.git}"
+        break
+        ;;
+    esac
+  done < "$git_config"
+fi
+
+# Fall back to directory basename.
+: "${project_name:=${proj_root##*/}}"
+
+if [[ -n "$project_name" ]]; then
+  segments+=($'\033[1m'"${project_name}"$'\033[0m')
+fi
+
 # ── Git branch ─────────────────────────────────────────────────────────
-head_file="${cwd}/.git/HEAD"
+head_file="${proj_root}/.git/HEAD"
 if [[ -f "$head_file" ]]; then
   head_content=$(<"$head_file")
   if [[ "$head_content" == ref:\ * ]]; then
@@ -31,7 +60,7 @@ if [[ -f "$head_file" ]]; then
   else
     branch="${head_content:0:7}"  # detached HEAD — short hash
   fi
-  if [[ -z "$(git -C "$cwd" status --porcelain 2>/dev/null)" ]]; then
+  if [[ -z "$(git -C "$proj_root" status --porcelain 2>/dev/null)" ]]; then
     segments+=($'\033[32m'"${branch}"$'\033[0m')   # green = clean
   else
     segments+=($'\033[31m'"${branch}"$'\033[0m')   # red = dirty
@@ -39,7 +68,7 @@ if [[ -f "$head_file" ]]; then
 fi
 
 # ── Plan progress ──────────────────────────────────────────────────────
-plan_dir="${cwd}/docs/plans"
+plan_dir="${proj_root}/docs/plans"
 if [[ -d "$plan_dir" ]]; then
   # Find the newest non-VERIFIED plan file.
   newest_plan=""

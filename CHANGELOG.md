@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `itkdev-statusline` extension with context window usage, git branch, and plan progress display
 
+### Fixed
+
+- Context percentage in `itkdev-statusline` now matches Claude Code's native context display by deriving from `remaining_percentage` instead of `used_percentage`
+
 ## [0.4.0] - 2026-02-20
 
 ### Added

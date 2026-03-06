@@ -12,7 +12,7 @@ feat/auth │ 2/5 │ ▰▰▰▰▰▱▱▱▱▱ 45%
 |---------|--------|-------|
 | Git branch | `.git/HEAD` in `cwd` | Handles detached HEAD (short hash) |
 | Plan progress | `docs/plans/*.md` in `cwd` | Newest non-VERIFIED plan, checkbox counts |
-| Context % | stdin JSON `context_window.used_percentage` | 10-segment progress bar, color coded |
+| Context % | stdin JSON `context_window.remaining_percentage` | 10-segment progress bar, color coded. Falls back to `used_percentage`. |
 
 ### Context color thresholds
 

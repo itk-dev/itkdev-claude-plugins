@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 # itkdev-statusline: Claude Code statusline showing git branch, plan progress, and context usage.
-# Reads JSON from stdin (context_window.used_percentage, cwd).
+# Reads JSON from stdin (context_window.remaining_percentage, cwd).
 # Target: <30ms execution, no unnecessary subprocesses.
 
 set -euo pipefail
 
-# Parse cwd and used_percentage from stdin JSON via a single jq call.
-# Use parameter expansion to split on tab (read strips leading IFS chars).
-tsv=$(jq -r '[(.cwd // ""), (.context_window.used_percentage // 0), (.transcript_path // "")] | @tsv' 2>/dev/null) || true
+# Parse cwd and context percentage from stdin JSON via a single jq call.
+# Prefer remaining_percentage (matches Claude Code's native context display)
+# over used_percentage, which excludes reserved overhead and can differ.
+tsv=$(jq -r '[(.cwd // ""), (if (.context_window.remaining_percentage // null) != null then (100 - .context_window.remaining_percentage) | floor else (.context_window.used_percentage // 0) end), (.transcript_path // "")] | @tsv' 2>/dev/null) || true
 cwd="${tsv%%$'\t'*}"
 rest="${tsv#*$'\t'}"
 pct="${rest%%$'\t'*}"

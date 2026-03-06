@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Project name segment in `itkdev-statusline` showing git repo name (or folder name) for easier session identification
 - `itkdev-statusline` extension with context window usage, git branch, and plan progress display
 
 ### Fixed

@@ -5,13 +5,14 @@ Claude Code statusline plugin showing git branch, plan progress, and context win
 ## What it shows
 
 ```
-feat/auth │ 2/5 │ ▰▰▰▰▰▱▱▱▱▱ 45%
+itkdev-claude-plugins │ feat/auth │ 2/5 │ ▰▰▰▰▰▱▱▱▱▱ 45%
 ```
 
 | Segment | Source | Notes |
 |---------|--------|-------|
-| Git branch | `.git/HEAD` in `cwd` | Handles detached HEAD (short hash) |
-| Plan progress | `docs/plans/*.md` in `cwd` | Newest non-VERIFIED plan, checkbox counts |
+| Project name | Git remote origin / `workspace.project_dir` / `cwd` basename | Bold. Identifies the session. |
+| Git branch | `.git/HEAD` in project root | Handles detached HEAD (short hash) |
+| Plan progress | `docs/plans/*.md` in project root | Newest non-VERIFIED plan, checkbox counts |
 | Context % | stdin JSON `context_window.remaining_percentage` | 10-segment progress bar, color coded. Falls back to `used_percentage`. |
 
 ### Context color thresholds

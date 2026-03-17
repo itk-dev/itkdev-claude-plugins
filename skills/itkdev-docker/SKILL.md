@@ -205,18 +205,9 @@ When you need to detect an ITK Dev Docker project, read these files:
 4. **Services**: Parse `docker-compose.yml` for service names under `services:` key
 5. **Extras**: Check for `Taskfile.yml`, `.github/workflows/` directory
 
-## Template Comparison (Procedural)
+## Template Comparison
 
-When comparing a project against its template:
-
-1. Read `.env` to find `ITKDEV_TEMPLATE` value
-2. Fetch template files from GitHub: `gh api repos/itk-dev/devops_itkdev-docker/contents/templates/{template}`
-3. For each key file (`docker-compose.yml`, `docker-compose.server.yml`, `.docker/nginx.conf`, `.docker/templates/default.conf.template`):
-   - Read local file
-   - Fetch template version: use raw URL `https://raw.githubusercontent.com/itk-dev/devops_itkdev-docker/develop/templates/{template}/{file}`
-   - Compare `# itk-version:` comments to detect outdated files
-   - Flag missing files
-4. Report: missing files, outdated files (version mismatch), and matching files
+For template comparison procedures, see the **"Procedural: Compare Project Against Template"** section in the `itkdev-docker-templates` skill.
 
 ## Troubleshooting
 

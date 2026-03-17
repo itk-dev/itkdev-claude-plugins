@@ -109,6 +109,7 @@ Core services (required):
 
 Optional services (check if present):
 - [ ] `worker` — only required for projects using background job processing
+- [ ] Other project-specific services
 
 #### Healthchecks
 

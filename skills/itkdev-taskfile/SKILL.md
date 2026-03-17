@@ -123,226 +123,56 @@ npm-watch:
 
 ## Coding Standards Tasks
 
-ITK Dev projects define tasks for checking and auto-fixing coding standards. The pattern follows `coding-standards-{type}:{check|apply}`:
+ITK Dev projects define tasks for checking and auto-fixing coding standards. The naming pattern is `coding-standards-{type}-{check|apply}`.
 
-### PHP (Drupal - phpcs/phpcbf)
+**Available types:** `php`, `javascript`, `markdown`, `styles` (CSS/SCSS), `twig`, `yaml`
 
-```yaml
-coding-standards-php-check:
-  desc: Check PHP coding standards
-  cmds:
-    - "{{.DOCKER}} vendor/bin/phpcs"
+Check tasks run linters in read-only mode. Apply tasks auto-fix violations.
 
-coding-standards-php-apply:
-  desc: Apply PHP coding standards fixes
-  cmds:
-    - "{{.DOCKER}} vendor/bin/phpcbf"
+```bash
+# Check all standards
+task coding-standards-php-check
+task coding-standards-javascript-check
+task coding-standards-twig-check
+task coding-standards-markdown-check
+task coding-standards-styles-check
+task coding-standards-yaml-check
+
+# Auto-fix violations
+task coding-standards-php-apply
+task coding-standards-javascript-apply
+task coding-standards-twig-apply
+task coding-standards-markdown-apply
+task coding-standards-styles-apply
+task coding-standards-yaml-apply
 ```
 
-### PHP (Symfony - php-cs-fixer)
+**Tools by framework:**
+- PHP: `phpcs`/`phpcbf` (Drupal) or `php-cs-fixer` (Symfony)
+- JavaScript/Styles/YAML: `prettier`
+- Markdown: `markdownlint`
+- Twig: `twig-cs-fixer`
 
-```yaml
-coding-standards-php-check:
-  desc: Check PHP coding standards
-  cmds:
-    - "{{.DOCKER}} vendor/bin/php-cs-fixer fix --dry-run"
+## Other Common Tasks
 
-coding-standards-php-apply:
-  desc: Apply PHP coding standards fixes
-  cmds:
-    - "{{.DOCKER}} vendor/bin/php-cs-fixer fix"
-```
-
-### JavaScript
-
-```yaml
-coding-standards-javascript-check:
-  desc: Check JavaScript coding standards
-  cmds:
-    - docker compose run --rm prettier --check 'web/**/*.js'
-
-coding-standards-javascript-apply:
-  desc: Apply JavaScript coding standards
-  cmds:
-    - docker compose run --rm prettier --write 'web/**/*.js'
-```
-
-### Markdown
-
-```yaml
-coding-standards-markdown-check:
-  desc: Check Markdown coding standards
-  cmds:
-    - docker compose run --rm markdownlint '**/*.md'
-
-coding-standards-markdown-apply:
-  desc: Apply Markdown coding standards
-  cmds:
-    - docker compose run --rm markdownlint --fix '**/*.md'
-```
-
-### Styles (CSS/SCSS)
-
-```yaml
-coding-standards-styles-check:
-  desc: Check CSS/SCSS coding standards
-  cmds:
-    - docker compose run --rm prettier --check 'web/**/*.scss'
-
-coding-standards-styles-apply:
-  desc: Apply CSS/SCSS coding standards
-  cmds:
-    - docker compose run --rm prettier --write 'web/**/*.scss'
-```
-
-### Twig
-
-```yaml
-coding-standards-twig-check:
-  desc: Check Twig coding standards
-  cmds:
-    - "{{.DOCKER}} vendor/bin/twig-cs-fixer lint"
-
-coding-standards-twig-apply:
-  desc: Apply Twig coding standards
-  cmds:
-    - "{{.DOCKER}} vendor/bin/twig-cs-fixer lint --fix"
-```
-
-### YAML
-
-```yaml
-coding-standards-yaml-check:
-  desc: Check YAML coding standards
-  cmds:
-    - docker compose run --rm prettier --check '**/*.yaml' '**/*.yml'
-
-coding-standards-yaml-apply:
-  desc: Apply YAML coding standards
-  cmds:
-    - docker compose run --rm prettier --write '**/*.yaml' '**/*.yml'
-```
-
-## Code Analysis
-
-```yaml
-code-analysis:
-  desc: Run PHPStan static analysis
-  cmds:
-    - "{{.DOCKER}} vendor/bin/phpstan"
-```
-
-## Database Operations
-
-```yaml
-database-dump:
-  desc: Dump database to file
-  cmds:
-    - "{{.DRUSH}} sql:dump --result-file=/app/dump.sql"
-```
-
-## Development Settings (Drupal)
-
-```yaml
-dev-settings-twig-debug:
-  desc: Enable Twig debug mode
-  cmds:
-    - "{{.DRUSH}} state:set twig_debug true"
-    - "{{.DRUSH}} cr"
-
-dev-settings-markup-cache:
-  desc: Disable render cache for development
-  cmds:
-    - "{{.DRUSH}} state:set system.performance css.preprocess 0"
-    - "{{.DRUSH}} state:set system.performance js.preprocess 0"
-    - "{{.DRUSH}} cr"
-```
-
-## Translation Tasks
-
-```yaml
-translations-import:
-  desc: Import translations
-  cmds:
-    - "{{.DRUSH}} locale:import da /app/translations/da.po"
-    - "{{.DRUSH}} cr"
-
-translations-export:
-  desc: Export translations
-  cmds:
-    - "{{.DRUSH}} locale:export da > /app/translations/da.po"
-```
-
-## Docker Image Management
-
-```yaml
-images-pull:
-  desc: Pull latest Docker images
-  cmds:
-    - docker compose pull
-```
-
-## Fixtures
-
-```yaml
-fixtures-load:
-  desc: Load fixture content
-  cmds:
-    - "{{.DRUSH}} content-fixtures:load --yes"
-    - "{{.DRUSH}} cr"
-```
+| Task | Description |
+|---|---|
+| `code-analysis` | Run PHPStan static analysis |
+| `database-dump` | Dump database to file |
+| `dev-settings-twig-debug` | Enable Twig debug mode |
+| `translations-import` / `translations-export` | Import/export translations |
+| `images-pull` | Pull latest Docker images |
+| `fixtures-load` | Load fixture content |
 
 ## Task Patterns
 
-### Prompts (interactive confirmation)
+Tasks support these Taskfile features:
 
-```yaml
-dangerous-task:
-  prompt: This will delete all data. Continue?
-  cmds:
-    - "{{.DRUSH}} sql:drop --yes"
-```
-
-### Silent (suppress command output)
-
-```yaml
-quiet-task:
-  silent: true
-  cmds:
-    - echo "Only this output is shown"
-```
-
-### Dynamic Variables
-
-```yaml
-dynamic-task:
-  vars:
-    BRANCH:
-      sh: git rev-parse --abbrev-ref HEAD
-  cmds:
-    - echo "Current branch: {{.BRANCH}}"
-```
-
-### CLI Arguments
-
-```yaml
-pass-through:
-  cmds:
-    - "{{.DRUSH}} {{.CLI_ARGS}}"
-```
-
-Usage: `task pass-through -- status`
-
-### Task Composition (deps and cmds)
-
-```yaml
-full-setup:
-  deps:
-    - npm-install
-  cmds:
-    - task: site-install
-    - task: npm-build
-```
+- **CLI arguments**: `task drush -- cr` (pass `-- <args>` to the underlying command)
+- **Prompts**: `prompt:` key for interactive confirmation on dangerous tasks
+- **Silent mode**: `silent: true` suppresses command echo
+- **Dynamic variables**: `sh:` for runtime evaluation (e.g., current git branch)
+- **Composition**: `deps:` for parallel prerequisites, `cmds:` with `task:` for sequential subtasks
 
 ## Common Workflows
 

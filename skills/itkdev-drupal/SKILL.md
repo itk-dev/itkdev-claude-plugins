@@ -24,7 +24,9 @@ For Docker environment details (CLI commands, services, configuration), see the 
 For Taskfile automation (coding standards, site management, asset building), see the `itkdev-taskfile` skill.
 For project templates and setup, see the `itkdev-docker-templates` skill.
 
-**Quick reference for Drupal-specific commands:**
+These skills are loaded automatically when relevant. Below is a quick reference for the most common Drupal-specific commands:
+
+**Quick reference:**
 
 ```bash
 # Via itkdev-docker-compose

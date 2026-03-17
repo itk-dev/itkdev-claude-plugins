@@ -1,6 +1,6 @@
 {
   "name": "itkdev-tools",
-  "description": "ITK Dev tools and MCP servers for Claude Code",
+  "description": "ITK Dev tools for Claude Code",
   "version": "0.5.0",
   "author": {
     "name": "ITK Dev",

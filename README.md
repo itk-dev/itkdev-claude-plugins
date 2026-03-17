@@ -63,6 +63,23 @@ The workflow will:
 - Create git tag and push
 - Create GitHub release with changelog notes
 
+## Troubleshooting
+
+### SSH permission denied when installing plugins
+
+If you get an error like:
+
+```
+git@github.com: Permission denied (publickey).
+fatal: Could not read from remote repository.
+```
+
+Claude Code clones plugin repos via SSH by default. If you don't have SSH keys configured for GitHub, configure git to use HTTPS instead:
+
+```bash
+git config --global url."https://github.com/".insteadOf "git@github.com:"
+```
+
 ## Adding a Plugin to the Marketplace
 
 To add a new plugin to the marketplace, add an entry to `.claude-plugin/marketplace.json`:

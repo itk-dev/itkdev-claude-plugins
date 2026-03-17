@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `itkdev-gh-actions` skill: GitHub Actions workflow templates (general, Drupal, Symfony workflows, configuration files)
 - Project name segment in `itkdev-statusline` showing git repo name (or folder name) for easier session identification
 - `itkdev-statusline` extension with context window usage, git branch, and plan progress display
-- `itkdev-validate-standards` skill for auditing projects against itk-dev Docker and development conventions (`skills/itkdev-validate-standards/SKILL.md`)
+- `itkdev-validate-standards` skill for auditing projects against itk-dev Docker and development conventions
   - Project-type detection (Symfony, Drupal, generic) with conditional checks per type
   - Automated comparison via `itkdev-docker` MCP tools (detect, compare, fetch template content)
   - 9-area validation checklist: Docker Compose, server compose, environment, Taskfile, framework-specific config, Composer, GitHub Actions, and miscellaneous files
@@ -26,11 +26,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Split `itkdev-tools` into 3 focused plugins:**
+  - `itkdev-skills` — all skills and agents (team conventions & workflows)
+  - `itkdev-browser-feedback` — browser feedback MCP server
+  - `itkdev-statusline` — unchanged
+- Marketplace now offers 3 independently installable plugins instead of 2
+- Moved `skills/` and `agents/` to `extensions/itkdev-skills/`
+- Moved `.mcp.json` to `extensions/itkdev-browser-feedback/`
+- CI/CD workflows updated to bump versions across all extension `plugin.json` files
 - Trimmed `itkdev-drupal` skill to remove Docker/Taskfile content now covered by dedicated skills, added cross-references
 - Bumped plugin version to 0.5.0
 
 ### Removed
 
+- Removed root `itkdev-tools` plugin (replaced by `itkdev-skills` and `itkdev-browser-feedback`)
 - Removed `itkdev-docker` MCP server from `.mcp.json` (replaced by skills)
 - Removed `mcp-itkdev-docker` entry from `mcp-versions.json`
 
@@ -118,9 +127,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub guidelines skill for ITK Dev team workflows
 - Plugin marketplace structure
 
-[Unreleased]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.4.0...HEAD
 [0.4.0]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.3...v0.4.0
 [0.3.3]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.2...v0.3.3
+[0.3.2]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.1.0...v0.2.0

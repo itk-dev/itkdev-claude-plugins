@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       updates_summary:
-        description: 'Summary of MCP updates'
+        description: 'Summary of dependency updates'
         required: false
         type: string
       browser_feedback_version:
@@ -35,19 +35,24 @@ jobs:
         run: |
           set -e
 
-          PLUGIN_JSON=".claude-plugin/plugin.json"
           MCP_VERSIONS=".claude-plugin/mcp-versions.json"
 
-          # Get current version and bump patch
-          CURRENT_VERSION=$(jq -r '.version' "$PLUGIN_JSON")
+          # Use itkdev-skills as the version source (all extensions share the same version)
+          VERSION_SOURCE="extensions/itkdev-skills/.claude-plugin/plugin.json"
+          CURRENT_VERSION=$(jq -r '.version' "$VERSION_SOURCE")
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
           NEW_PATCH=$((PATCH + 1))
           NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
 
           echo "Bumping version: $CURRENT_VERSION -> $NEW_VERSION"
 
-          # Update plugin.json version
-          jq --arg v "$NEW_VERSION" '.version = $v' "$PLUGIN_JSON" > tmp.json && mv tmp.json "$PLUGIN_JSON"
+          # Update version in all extension plugin.json files
+          for PLUGIN_JSON in extensions/*/.claude-plugin/plugin.json; do
+            if [ -f "$PLUGIN_JSON" ]; then
+              jq --arg v "$NEW_VERSION" '.version = $v' "$PLUGIN_JSON" > tmp.json && mv tmp.json "$PLUGIN_JSON"
+              echo "Updated $PLUGIN_JSON to $NEW_VERSION"
+            fi
+          done
 
           # Update mcp-versions.json with new tracked versions
           if [ -n "$BROWSER_FEEDBACK_VERSION" ] && [ "$BROWSER_FEEDBACK_VERSION" != "none" ]; then
@@ -55,10 +60,10 @@ jobs:
           fi
 
           # Commit changes
-          git add "$PLUGIN_JSON" "$MCP_VERSIONS"
+          git add .claude-plugin/mcp-versions.json extensions/*/.claude-plugin/plugin.json
           git commit -m "chore: bump version to $NEW_VERSION
 
-          MCP dependency updates:
+          Dependency updates:
           $UPDATES_SUMMARY"
 
           # Create and push tag
@@ -70,11 +75,11 @@ jobs:
           # Create GitHub release
           RELEASE_NOTES="## What's Changed
 
-          This release updates MCP server dependencies:
+          This release updates dependencies:
 
           $UPDATES_SUMMARY
 
-          ## MCP Versions
+          ## Dependency Versions
           - mcp-claude-code-browser-feedback: $(jq -r '.["mcp-claude-code-browser-feedback"]' "$MCP_VERSIONS")"
 
           gh release create "$TAG" \

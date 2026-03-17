@@ -9,8 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `itkdev-docker` skill: Docker development environment (CLI reference, Compose architecture, services, Traefik, server deployments, project detection, template comparison)
+- `itkdev-docker-templates` skill: Project template conventions (available templates, installation, setup workflows, procedural template operations)
+- `itkdev-taskfile` skill: Taskfile development workflows (task patterns, coding standards, site management, asset building)
+- `itkdev-gh-actions` skill: GitHub Actions workflow templates (general, Drupal, Symfony workflows, configuration files)
 - Project name segment in `itkdev-statusline` showing git repo name (or folder name) for easier session identification
 - `itkdev-statusline` extension with context window usage, git branch, and plan progress display
+
+### Changed
+
+- Trimmed `itkdev-drupal` skill to remove Docker/Taskfile content now covered by dedicated skills, added cross-references
+- Bumped plugin version to 0.5.0
+
+### Removed
+
+- Removed `itkdev-docker` MCP server from `.mcp.json` (replaced by skills)
+- Removed `mcp-itkdev-docker` entry from `mcp-versions.json`
 
 ### Fixed
 

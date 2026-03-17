@@ -115,16 +115,12 @@ jobs:
             fi
           done
 
-          # Update root plugin.json
-          ROOT_PLUGIN=".claude-plugin/plugin.json"
-          jq --arg v "$NEW_VERSION" '.version = $v' "$ROOT_PLUGIN" > tmp.json && mv tmp.json "$ROOT_PLUGIN"
-          echo "Updated $ROOT_PLUGIN to $NEW_VERSION"
 
       - name: Commit changes
         env:
           NEW_VERSION: ${{ steps.version.outputs.new }}
         run: |
-          git add CHANGELOG.md .claude-plugin/plugin.json extensions/*/.claude-plugin/plugin.json
+          git add CHANGELOG.md extensions/*/.claude-plugin/plugin.json
           git commit -m "chore: prepare release v${NEW_VERSION}"
 
       - name: Create and push tag

@@ -33,7 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Marketplace now offers 3 independently installable plugins instead of 2
 - Moved `skills/` and `agents/` to `extensions/itkdev-skills/`
 - Moved `.mcp.json` to `extensions/itkdev-browser-feedback/`
-- Root `plugin.json` is now a minimal marketplace-only manifest
 - CI/CD workflows updated to bump versions across all extension `plugin.json` files
 - Trimmed `itkdev-drupal` skill to remove Docker/Taskfile content now covered by dedicated skills, added cross-references
 - Bumped plugin version to 0.5.0
@@ -131,6 +130,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.4.0...HEAD
 [0.4.0]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.3...v0.4.0
 [0.3.3]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.2...v0.3.3
+[0.3.2]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.1.0...v0.2.0

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       updates_summary:
-        description: 'Summary of MCP updates'
+        description: 'Summary of dependency updates'
         required: false
         type: string
       browser_feedback_version:
@@ -54,19 +54,16 @@ jobs:
             fi
           done
 
-          # Update root plugin.json
-          jq --arg v "$NEW_VERSION" '.version = $v' ".claude-plugin/plugin.json" > tmp.json && mv tmp.json ".claude-plugin/plugin.json"
-
           # Update mcp-versions.json with new tracked versions
           if [ -n "$BROWSER_FEEDBACK_VERSION" ] && [ "$BROWSER_FEEDBACK_VERSION" != "none" ]; then
             jq --arg v "$BROWSER_FEEDBACK_VERSION" '.["mcp-claude-code-browser-feedback"] = $v' "$MCP_VERSIONS" > tmp.json && mv tmp.json "$MCP_VERSIONS"
           fi
 
           # Commit changes
-          git add .claude-plugin/plugin.json .claude-plugin/mcp-versions.json extensions/*/.claude-plugin/plugin.json
+          git add .claude-plugin/mcp-versions.json extensions/*/.claude-plugin/plugin.json
           git commit -m "chore: bump version to $NEW_VERSION
 
-          MCP dependency updates:
+          Dependency updates:
           $UPDATES_SUMMARY"
 
           # Create and push tag
@@ -78,11 +75,11 @@ jobs:
           # Create GitHub release
           RELEASE_NOTES="## What's Changed
 
-          This release updates MCP server dependencies:
+          This release updates dependencies:
 
           $UPDATES_SUMMARY
 
-          ## MCP Versions
+          ## Dependency Versions
           - mcp-claude-code-browser-feedback: $(jq -r '.["mcp-claude-code-browser-feedback"]' "$MCP_VERSIONS")"
 
           gh release create "$TAG" \

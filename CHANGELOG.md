@@ -35,7 +35,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Moved `.mcp.json` to `extensions/itkdev-browser-feedback/`
 - Root `plugin.json` is now a minimal marketplace-only manifest
 - CI/CD workflows updated to bump versions across all extension `plugin.json` files
-- Renamed repository from `itkdev-claude-tools` to `itkdev-claude-tools`
 - Trimmed `itkdev-drupal` skill to remove Docker/Taskfile content now covered by dedicated skills, added cross-references
 - Bumped plugin version to 0.5.0
 
@@ -129,10 +128,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub guidelines skill for ITK Dev team workflows
 - Plugin marketplace structure
 
-[Unreleased]: https://github.com/itk-dev/itkdev-claude-tools/compare/v0.3.1...HEAD
-[0.4.0]: https://github.com/itk-dev/itkdev-claude-tools/compare/v0.3.3...v0.4.0
-[0.3.3]: https://github.com/itk-dev/itkdev-claude-tools/compare/v0.3.2...v0.3.3
-[0.3.1]: https://github.com/itk-dev/itkdev-claude-tools/compare/v0.3.0...v0.3.1
-[0.3.0]: https://github.com/itk-dev/itkdev-claude-tools/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/itk-dev/itkdev-claude-tools/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/itk-dev/itkdev-claude-tools/releases/tag/v0.1.0
+[Unreleased]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.3...v0.4.0
+[0.3.3]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.2...v0.3.3
+[0.3.1]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/itk-dev/itkdev-claude-plugins/releases/tag/v0.1.0

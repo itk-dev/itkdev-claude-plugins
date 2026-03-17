@@ -1,11 +1,11 @@
-# ITK Dev Claude Tools
+# ITK Dev Claude Plugins
 
 A Claude Code plugin marketplace for ITK Dev team tools, skills, and MCP servers.
 
 ## Structure
 
 ```
-itkdev-claude-tools/
+itkdev-claude-plugins/
 ├── .claude-plugin/
 │   ├── plugin.json            # Marketplace manifest
 │   ├── marketplace.json       # Marketplace catalog
@@ -37,7 +37,7 @@ Team members can install the marketplace and individual plugins:
 
 ```bash
 # Add the marketplace
-/plugin marketplace add itk-dev/itkdev-claude-tools
+/plugin marketplace add itk-dev/itkdev-claude-plugins
 
 # Install plugins individually
 /plugin install itkdev-skills@itkdev-marketplace
@@ -146,8 +146,31 @@ extensions/itkdev-skills/agents/
 
 ### Adding MCP Servers
 
-Create a new extension directory under `extensions/` with its own `.claude-plugin/plugin.json` and `.mcp.json`.
+Create a new extension directory under `extensions/` with its own `.claude-plugin/plugin.json` and `.mcp.json`:
+
+```
+extensions/
+└── your-mcp-server/
+    ├── .claude-plugin/
+    │   └── plugin.json
+    └── .mcp.json
+```
+
+Then add the plugin to `.claude-plugin/marketplace.json`.
 
 ### Adding Extensions
 
-Create a subdirectory in `extensions/` with its own `.claude-plugin/plugin.json` and any commands or scripts. Then add it to `.claude-plugin/marketplace.json`.
+Create a subdirectory in `extensions/` with its own `.claude-plugin/plugin.json` and any commands or scripts:
+
+```
+extensions/
+└── your-extension-name/
+    ├── .claude-plugin/
+    │   └── plugin.json
+    ├── bin/
+    │   └── your-script.sh
+    └── commands/
+        └── setup-your-extension.md
+```
+
+Then add the plugin to `.claude-plugin/marketplace.json`.

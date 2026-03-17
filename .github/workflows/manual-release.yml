@@ -96,7 +96,7 @@ jobs:
           sed -i "s|\[Unreleased\]: \(.*\)/compare/v${CURRENT_VERSION}\.\.\.HEAD|[Unreleased]: \1/compare/v${NEW_VERSION}...HEAD|" CHANGELOG.md
 
           # Add new version link after [Unreleased] link
-          sed -i "/^\[Unreleased\]:.*HEAD$/a [$NEW_VERSION]: https://github.com/itk-dev/itkdev-claude-tools/compare/v${CURRENT_VERSION}...v${NEW_VERSION}" CHANGELOG.md
+          sed -i "/^\[Unreleased\]:.*HEAD$/a [$NEW_VERSION]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v${CURRENT_VERSION}...v${NEW_VERSION}" CHANGELOG.md
 
           echo "Updated CHANGELOG.md:"
           head -30 CHANGELOG.md
@@ -151,7 +151,7 @@ jobs:
             cat release_notes.md
             echo ""
             echo "## Full Changelog"
-            echo "https://github.com/itk-dev/itkdev-claude-tools/compare/v${CURRENT_VERSION}...v${NEW_VERSION}"
+            echo "https://github.com/itk-dev/itkdev-claude-plugins/compare/v${CURRENT_VERSION}...v${NEW_VERSION}"
           } > full_release_notes.md
 
           gh release create "$TAG" \

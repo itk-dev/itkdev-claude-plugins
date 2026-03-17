@@ -37,8 +37,8 @@ jobs:
 
           MCP_VERSIONS=".claude-plugin/mcp-versions.json"
 
-          # Use itkdev-browser-feedback plugin.json as the version source
-          VERSION_SOURCE="extensions/itkdev-browser-feedback/.claude-plugin/plugin.json"
+          # Use itkdev-skills as the version source (all extensions share the same version)
+          VERSION_SOURCE="extensions/itkdev-skills/.claude-plugin/plugin.json"
           CURRENT_VERSION=$(jq -r '.version' "$VERSION_SOURCE")
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
           NEW_PATCH=$((PATCH + 1))

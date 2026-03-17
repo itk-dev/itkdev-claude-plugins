@@ -10,17 +10,26 @@
     {
       "name": "itkdev-skills",
       "description": "ITK Dev team conventions, workflows, and coding standards",
-      "source": "./extensions/itkdev-skills"
+      "source": {
+        "source": "github",
+        "repo": "itk-dev/itkdev-skills"
+      }
     },
     {
       "name": "itkdev-browser-feedback",
       "description": "Browser-based visual feedback and annotation MCP server",
-      "source": "./extensions/itkdev-browser-feedback"
+      "source": {
+        "source": "github",
+        "repo": "itk-dev/mcp-claude-code-browser-feedback"
+      }
     },
     {
       "name": "itkdev-statusline",
       "description": "Claude Code statusline with git branch, plan progress, and context window usage",
-      "source": "./extensions/itkdev-statusline"
+      "source": {
+        "source": "github",
+        "repo": "itk-dev/itkdev-claude-code-statusline"
+      }
     }
   ]
 }

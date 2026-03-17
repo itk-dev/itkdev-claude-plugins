@@ -7,45 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-- `itkdev-docker` skill: Docker development environment (CLI reference, Compose architecture, services, Traefik, server deployments, project detection, template comparison)
-- `itkdev-docker-templates` skill: Project template conventions (available templates, installation, setup workflows, procedural template operations)
-- `itkdev-taskfile` skill: Taskfile development workflows (task patterns, coding standards, site management, asset building)
-- `itkdev-gh-actions` skill: GitHub Actions workflow templates (general, Drupal, Symfony workflows, configuration files)
-- Project name segment in `itkdev-statusline` showing git repo name (or folder name) for easier session identification
-- `itkdev-statusline` extension with context window usage, git branch, and plan progress display
-- `itkdev-validate-standards` skill for auditing projects against itk-dev Docker and development conventions
-  - Project-type detection (Symfony, Drupal, generic) with conditional checks per type
-  - Automated comparison via `itkdev-docker` MCP tools (detect, compare, fetch template content)
-  - 9-area validation checklist: Docker Compose, server compose, environment, Taskfile, framework-specific config, Composer, GitHub Actions, and miscellaneous files
-  - Conditional framework-specific checks (Symfony Twig/PHPStan paths, Drupal custom module paths)
-  - Support for documented project exceptions via `CLAUDE.md` or memory files
-  - Remediation tables for each validation area
-  - Summary report generation
-
 ### Changed
 
-- **Split `itkdev-tools` into 3 focused plugins:**
-  - `itkdev-skills` — all skills and agents (team conventions & workflows)
-  - `itkdev-browser-feedback` — browser feedback MCP server
-  - `itkdev-statusline` — unchanged
-- Marketplace now offers 3 independently installable plugins instead of 2
-- Moved `skills/` and `agents/` to `extensions/itkdev-skills/`
-- Moved `.mcp.json` to `extensions/itkdev-browser-feedback/`
-- CI/CD workflows updated to bump versions across all extension `plugin.json` files
-- Trimmed `itkdev-drupal` skill to remove Docker/Taskfile content now covered by dedicated skills, added cross-references
-- Bumped plugin version to 0.5.0
+- **Converted to pure marketplace catalog** — all plugins now live in their own repos (#34):
+  - `itkdev-skills` -> [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills)
+  - `itkdev-browser-feedback` -> [itk-dev/mcp-claude-code-browser-feedback](https://github.com/itk-dev/mcp-claude-code-browser-feedback)
+  - `itkdev-statusline` -> [itk-dev/itkdev-claude-code-statusline](https://github.com/itk-dev/itkdev-claude-code-statusline)
+- Marketplace plugins now reference external GitHub repos instead of local `./extensions/` paths
+- Simplified CI workflows (no local plugin.json version bumping)
 
 ### Removed
 
-- Removed root `itkdev-tools` plugin (replaced by `itkdev-skills` and `itkdev-browser-feedback`)
-- Removed `itkdev-docker` MCP server from `.mcp.json` (replaced by skills)
-- Removed `mcp-itkdev-docker` entry from `mcp-versions.json`
-
-### Fixed
-
-- Context percentage in `itkdev-statusline` now matches Claude Code's native context display by deriving from `remaining_percentage` instead of `used_percentage`
+- Removed `extensions/` directory — plugin code moved to individual repos
+- Removed `.claude-plugin/mcp-versions.json` — version tracking handled by individual repos
+- Removed `check-mcp-updates.yml` and `release.yml` workflows (no longer needed for catalog-only repo)
 
 ## [0.4.0] - 2026-02-20
 

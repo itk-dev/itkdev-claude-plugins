@@ -5,7 +5,7 @@ description: |
   itk-dev/devops_itkdev-docker. Use when: (1) auditing Docker setup, (2)
   "check itk-dev standards", (3) reviewing PR for convention compliance,
   (4) setting up a new itk-dev project, (5) upgrading Docker configuration.
-  Walks through 9 validation areas: MCP tool comparison, docker-compose,
+  Walks through 9 validation areas: template comparison, docker-compose,
   server compose, environment, Taskfile, framework-specific config, Composer,
   GitHub Actions, and miscellaneous files.
 author: Claude Code
@@ -33,43 +33,37 @@ Use this skill when:
 
 ## Solution
 
-### Step 0 — MCP Tool Automated Comparison
+### Step 0 — Automated Comparison
 
-Before manual checks, attempt automated comparison using the
-`plugin:itkdev-tools:itkdev-docker` MCP tools. These provide
-file-level diffs against the canonical template.
+Before manual checks, attempt automated comparison against the canonical
+template. See the `itkdev-docker` and `itkdev-docker-templates` skills
+for full procedural details.
 
 **Procedure:**
 
-1. **Detect project type:**
-   ```
-   Tool: mcp__plugin_itkdev-tools_itkdev-docker__itkdev_detect_project
-   Parameter: path = <project root>
-   ```
-   Returns: template name (e.g., `symfony-7`), PHP version, framework.
+1. **Detect project type:** Read `.env` for `ITKDEV_TEMPLATE` value and
+   `docker-compose.yml` for `# itk-version:` comment and PHP image version.
+   See the `itkdev-docker` skill (Project Detection section).
 
-2. **Compare against template:**
-   ```
-   Tool: mcp__plugin_itkdev-tools_itkdev-docker__itkdev_compare_project
-   Parameter: path = <project root>
-   ```
-   Returns: list of missing, outdated, and extra files vs. the template.
+2. **Compare against template:** Fetch template files from GitHub and compare
+   `# itk-version:` comments in local files against the template versions.
+   See the `itkdev-docker-templates` skill (Compare Project Against Template section).
 
-3. **Fetch canonical file content (for any diffs):**
-   ```
-   Tool: mcp__plugin_itkdev-tools_itkdev-docker__itkdev_get_template_content
-   Parameters: template = <detected template>, file = <relative path>
-   ```
-   Returns: the template's version of the file for manual comparison.
+   ```bash
+   # List template files
+   gh api repos/itk-dev/devops_itkdev-docker/contents/templates/{template} --jq '.[].name'
 
-4. **List available templates (if detection fails):**
+   # Fetch a specific template file for comparison
+   gh api repos/itk-dev/devops_itkdev-docker/contents/templates/{template}/{file} --jq '.content' | base64 -d
    ```
-   Tool: mcp__plugin_itkdev-tools_itkdev-docker__itkdev_list_templates
-   ```
-   Returns: all available templates with PHP versions.
 
-**Fallback:** If MCP tools are unavailable or the project is not detected,
-proceed with the manual checklist below.
+3. **List available templates (if detection fails):**
+   ```bash
+   gh api repos/itk-dev/devops_itkdev-docker/contents/templates --jq '.[].name'
+   ```
+
+**Fallback:** If the project type cannot be detected, proceed with the
+manual checklist below.
 
 #### Project Type Classification
 
@@ -92,7 +86,8 @@ When a check fails but the deviation is documented, report it as
 
 ### Step 1 — Docker Compose (`docker-compose.yml`)
 
-Validate the development Docker Compose file.
+Validate the development Docker Compose file. See the `itkdev-docker` skill
+for full architecture details.
 
 #### Networks
 
@@ -141,11 +136,9 @@ Optional services (check if present):
 
 - [ ] `node`, `markdownlint`, `prettier` services have `profiles: [dev]`
 
-> **Note:** Dev profile services (`node`, `markdownlint`, `prettier`) are
-> typically defined in `docker-compose.override.yml` for local customization.
+> **Note:** Dev profile services are typically defined in
+> `docker-compose.override.yml` for local customization.
 > If they only appear in the override file, the check passes automatically.
-> `docker-compose.override.yml` is used for local development customization
-> and is not subject to the same strict validation.
 
 #### Remediation
 
@@ -212,7 +205,8 @@ Validate environment file conventions.
 
 ### Step 4 — Taskfile.yml
 
-Validate task runner configuration.
+Validate task runner configuration. See the `itkdev-taskfile` skill for
+standard patterns and task definitions.
 
 #### Header
 
@@ -233,35 +227,19 @@ Conditional variables:
 #### Required Tasks (all project types)
 
 - [ ] `compose`/`up` — start containers
-- [ ] `down` — stop containers (`{{.DOCKER_COMPOSE}} down`)
+- [ ] `down` — stop containers
 - [ ] A dependency install task (e.g., `install`, `composer:install`)
 
-#### Symfony-Specific Tasks (if detected as Symfony)
+#### Framework-Specific Tasks
 
-- [ ] `lint:twig` — Twig CS Fixer lint
-- [ ] `lint:twig:fix` — Twig CS Fixer fix
-- [ ] `analyze` — PHPStan analyse
-
-#### Drupal-Specific Tasks (if detected as Drupal)
-
-- [ ] `drush` — Run Drush commands
-- [ ] Config import/export tasks
+- [ ] If Symfony: `lint:twig`, `lint:twig:fix`, `analyze`
+- [ ] If Drupal: `drush`, config import/export tasks
 
 #### Optional / Recommended Tasks
 
-The following tasks are recommended but not strictly required. Their absence
-should be noted as suggestions, not failures:
-
-- [ ] `setup` — first-time project setup
-- [ ] `restart` — calls down then up
-- [ ] `ci` — run all CI checks
-- [ ] `lint` — run all linters (calls subtasks)
-- [ ] `lint:php` — PHP CS Fixer dry-run
-- [ ] `lint:php:fix` — PHP CS Fixer fix
-- [ ] `lint:composer` — composer validate + normalize dry-run
-- [ ] `lint:markdown` — markdown lint via container
-- [ ] `lint:styles` — Prettier check on CSS/SCSS
-- [ ] `test` — PHPUnit all tests
+Note as suggestions, not failures:
+`setup`, `restart`, `ci`, `lint`, `lint:php`, `lint:php:fix`,
+`lint:composer`, `lint:markdown`, `lint:styles`, `test`
 
 #### Remediation
 
@@ -269,7 +247,7 @@ should be noted as suggestions, not failures:
 |-------|-----|
 | Missing dotenv | Add `dotenv: [".env.local", ".env"]` |
 | Wrong var names | Rename to match standard: `DOCKER_COMPOSE`, `PHP`, etc. |
-| Missing required task | Add task following the patterns in the template |
+| Missing required task | Add task following the patterns in the `itkdev-taskfile` skill |
 
 ---
 
@@ -347,7 +325,8 @@ Validate Composer configuration.
 
 ### Step 7 — GitHub Actions
 
-Validate CI workflow files.
+Validate CI workflow files. See the `itkdev-gh-actions` skill for available
+workflow templates and naming conventions.
 
 #### Expected Workflow Files
 
@@ -380,7 +359,7 @@ Projects with JS/CSS assets:
 
 | Check | Fix |
 |-------|-----|
-| Missing workflow | Copy from template repo's `github/workflows/symfony/` |
+| Missing workflow | Fetch from template repo (see `itkdev-gh-actions` skill) |
 | Outdated checkout | Update to `actions/checkout@v5` |
 | Missing `COMPOSE_USER` | Add `env: COMPOSE_USER: runner` at workflow level |
 | Missing network create | Add step: `docker network create frontend` |
@@ -424,7 +403,7 @@ Date: <current date>
 
 | Area                     | Status | Issues |
 |--------------------------|--------|--------|
-| Step 0: MCP Comparison   |   /    |   -    |
+| Step 0: Template Compare |   /    |   -    |
 | Step 1: docker-compose   |   /    |   0    |
 | Step 2: Server compose   |   /    |   0    |
 | Step 3: Environment      |   /    |   0    |
@@ -500,7 +479,7 @@ Date: 2026-02-26
 
 | Area                     | Status | Issues |
 |--------------------------|--------|--------|
-| Step 0: MCP Comparison   | PASS   |   0    |
+| Step 0: Template Compare | PASS   |   0    |
 | Step 1: docker-compose   | PASS   |   0    |
 | Step 2: Server compose   | PASS   |   0    |
 | Step 3: Environment      | PASS   |   0    |
@@ -518,11 +497,10 @@ All checks passed. COMPLIANT
 ## References
 
 - Template repository: <https://github.com/itk-dev/devops_itkdev-docker>
-- MCP plugin: `plugin:itkdev-tools:itkdev-docker` (5 tools)
-  - `itkdev_detect_project` — detect project type and PHP version
-  - `itkdev_compare_project` — file-level diff against template
-  - `itkdev_get_template_content` — fetch canonical file from template
-  - `itkdev_get_template_files` — list files in a template
-  - `itkdev_list_templates` — list all available templates
+- Related skills:
+  - `itkdev-docker` — CLI reference, Compose architecture, project detection
+  - `itkdev-docker-templates` — template management, comparison procedures
+  - `itkdev-taskfile` — task patterns, coding standards, workflows
+  - `itkdev-gh-actions` — workflow templates, naming conventions
 - Project CLAUDE.md: conventions and architecture overview
 - Taskfile.dev documentation: <https://taskfile.dev>

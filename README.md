@@ -22,10 +22,14 @@ itkdev-claude-plugins/
 │   └── itkdev-statusline/
 ├── skills/                     # Skills (subdirectories with SKILL.md)
 │   ├── itkdev-adr/
+│   ├── itkdev-docker/
+│   ├── itkdev-docker-templates/
 │   ├── itkdev-documentation/
 │   ├── itkdev-drupal/
+│   ├── itkdev-gh-actions/
 │   ├── itkdev-github-guidelines/
-│   └── itkdev-issue-workflow/
+│   ├── itkdev-issue-workflow/
+│   └── itkdev-taskfile/
 └── README.md
 ```
 
@@ -47,11 +51,23 @@ Team members can install the marketplace and plugins with:
 
 Browser feedback collection tool from [mcp-claude-code-browser-feedback](https://github.com/itk-dev/mcp-claude-code-browser-feedback).
 
+## Included Skills
+
 ### itkdev-docker
 
-Docker environment management for ITK Dev projects from [mcp-itkdev-docker](https://github.com/itk-dev/mcp-itkdev-docker). Provides template detection, comparison, and setup tools for ITK Dev Docker configurations.
+Docker development environment for ITK Dev projects. Covers the `itkdev-docker-compose` CLI, Docker Compose architecture, service configuration, Traefik reverse proxy, server deployments, project detection, and template comparison.
 
-## Included Skills
+### itkdev-docker-templates
+
+Project template conventions for ITK Dev Docker projects. Covers available templates, installation, setup workflows, and procedural template operations (listing, fetching, comparing).
+
+### itkdev-gh-actions
+
+GitHub Actions workflow templates for ITK Dev projects. Covers general, Drupal, Drupal module, and Symfony workflows, configuration files, and workflow management.
+
+### itkdev-taskfile
+
+Taskfile development workflows for ITK Dev projects. Covers task patterns, coding standards tasks, site management, asset building, and common workflows.
 
 ### itkdev-adr
 
@@ -130,7 +146,6 @@ This plugin automatically releases new versions when MCP server dependencies pub
 | MCP Server | Repository |
 |------------|------------|
 | browser-feedback | [mcp-claude-code-browser-feedback](https://github.com/itk-dev/mcp-claude-code-browser-feedback) |
-| itkdev-docker | [mcp-itkdev-docker](https://github.com/itk-dev/mcp-itkdev-docker) |
 
 #### Manual MCP Check
 

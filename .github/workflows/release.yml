@@ -11,10 +11,6 @@ on:
         description: 'New version of mcp-claude-code-browser-feedback'
         required: false
         type: string
-      docker_version:
-        description: 'New version of mcp-itkdev-docker'
-        required: false
-        type: string
 
 jobs:
   release:
@@ -36,7 +32,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           UPDATES_SUMMARY: ${{ inputs.updates_summary }}
           BROWSER_FEEDBACK_VERSION: ${{ inputs.browser_feedback_version }}
-          DOCKER_VERSION: ${{ inputs.docker_version }}
         run: |
           set -e
 
@@ -57,10 +52,6 @@ jobs:
           # Update mcp-versions.json with new tracked versions
           if [ -n "$BROWSER_FEEDBACK_VERSION" ] && [ "$BROWSER_FEEDBACK_VERSION" != "none" ]; then
             jq --arg v "$BROWSER_FEEDBACK_VERSION" '.["mcp-claude-code-browser-feedback"] = $v' "$MCP_VERSIONS" > tmp.json && mv tmp.json "$MCP_VERSIONS"
-          fi
-
-          if [ -n "$DOCKER_VERSION" ] && [ "$DOCKER_VERSION" != "none" ]; then
-            jq --arg v "$DOCKER_VERSION" '.["mcp-itkdev-docker"] = $v' "$MCP_VERSIONS" > tmp.json && mv tmp.json "$MCP_VERSIONS"
           fi
 
           # Commit changes
@@ -84,8 +75,7 @@ jobs:
           $UPDATES_SUMMARY
 
           ## MCP Versions
-          - mcp-claude-code-browser-feedback: $(jq -r '.["mcp-claude-code-browser-feedback"]' "$MCP_VERSIONS")
-          - mcp-itkdev-docker: $(jq -r '.["mcp-itkdev-docker"]' "$MCP_VERSIONS")"
+          - mcp-claude-code-browser-feedback: $(jq -r '.["mcp-claude-code-browser-feedback"]' "$MCP_VERSIONS")"
 
           gh release create "$TAG" \
             --title "Release $TAG" \

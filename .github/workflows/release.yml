@@ -35,19 +35,27 @@ jobs:
         run: |
           set -e
 
-          PLUGIN_JSON=".claude-plugin/plugin.json"
           MCP_VERSIONS=".claude-plugin/mcp-versions.json"
 
-          # Get current version and bump patch
-          CURRENT_VERSION=$(jq -r '.version' "$PLUGIN_JSON")
+          # Use itkdev-browser-feedback plugin.json as the version source
+          VERSION_SOURCE="extensions/itkdev-browser-feedback/.claude-plugin/plugin.json"
+          CURRENT_VERSION=$(jq -r '.version' "$VERSION_SOURCE")
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
           NEW_PATCH=$((PATCH + 1))
           NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
 
           echo "Bumping version: $CURRENT_VERSION -> $NEW_VERSION"
 
-          # Update plugin.json version
-          jq --arg v "$NEW_VERSION" '.version = $v' "$PLUGIN_JSON" > tmp.json && mv tmp.json "$PLUGIN_JSON"
+          # Update version in all extension plugin.json files
+          for PLUGIN_JSON in extensions/*/.claude-plugin/plugin.json; do
+            if [ -f "$PLUGIN_JSON" ]; then
+              jq --arg v "$NEW_VERSION" '.version = $v' "$PLUGIN_JSON" > tmp.json && mv tmp.json "$PLUGIN_JSON"
+              echo "Updated $PLUGIN_JSON to $NEW_VERSION"
+            fi
+          done
+
+          # Update root plugin.json
+          jq --arg v "$NEW_VERSION" '.version = $v' ".claude-plugin/plugin.json" > tmp.json && mv tmp.json ".claude-plugin/plugin.json"
 
           # Update mcp-versions.json with new tracked versions
           if [ -n "$BROWSER_FEEDBACK_VERSION" ] && [ "$BROWSER_FEEDBACK_VERSION" != "none" ]; then
@@ -55,7 +63,7 @@ jobs:
           fi
 
           # Commit changes
-          git add "$PLUGIN_JSON" "$MCP_VERSIONS"
+          git add .claude-plugin/plugin.json .claude-plugin/mcp-versions.json extensions/*/.claude-plugin/plugin.json
           git commit -m "chore: bump version to $NEW_VERSION
 
           MCP dependency updates:

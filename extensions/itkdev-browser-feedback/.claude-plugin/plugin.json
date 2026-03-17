@@ -1,6 +1,6 @@
 {
-  "name": "itkdev-marketplace",
-  "description": "ITK Dev Claude Code marketplace — install individual plugins from this marketplace",
+  "name": "itkdev-browser-feedback",
+  "description": "Browser-based visual feedback and annotation MCP server for Claude Code",
   "version": "0.5.0",
   "author": {
     "name": "ITK Dev",
@@ -10,6 +10,9 @@
   "license": "MIT",
   "keywords": [
     "itk-dev",
-    "marketplace"
+    "mcp",
+    "browser",
+    "feedback",
+    "annotation"
   ]
 }

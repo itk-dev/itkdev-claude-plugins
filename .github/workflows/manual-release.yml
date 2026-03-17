@@ -45,8 +45,9 @@ jobs:
         env:
           VERSION_BUMP: ${{ inputs.version_bump }}
         run: |
-          PLUGIN_JSON=".claude-plugin/plugin.json"
-          CURRENT_VERSION=$(jq -r '.version' "$PLUGIN_JSON")
+          # Use itkdev-skills as the version source (all extensions share the same version)
+          VERSION_SOURCE="extensions/itkdev-skills/.claude-plugin/plugin.json"
+          CURRENT_VERSION=$(jq -r '.version' "$VERSION_SOURCE")
 
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
 
@@ -95,29 +96,35 @@ jobs:
           sed -i "s|\[Unreleased\]: \(.*\)/compare/v${CURRENT_VERSION}\.\.\.HEAD|[Unreleased]: \1/compare/v${NEW_VERSION}...HEAD|" CHANGELOG.md
 
           # Add new version link after [Unreleased] link
-          # Find the [Unreleased] link line and add new version link after it
-          sed -i "/^\[Unreleased\]:.*HEAD$/a [$NEW_VERSION]: https://github.com/itk-dev/itkdev-claude-plugins/compare/v${CURRENT_VERSION}...v${NEW_VERSION}" CHANGELOG.md
+          sed -i "/^\[Unreleased\]:.*HEAD$/a [$NEW_VERSION]: https://github.com/itk-dev/itkdev-claude-tools/compare/v${CURRENT_VERSION}...v${NEW_VERSION}" CHANGELOG.md
 
           echo "Updated CHANGELOG.md:"
           head -30 CHANGELOG.md
           echo "..."
           tail -10 CHANGELOG.md
 
-      - name: Update plugin.json
+      - name: Update plugin.json files
         env:
           NEW_VERSION: ${{ steps.version.outputs.new }}
         run: |
-          PLUGIN_JSON=".claude-plugin/plugin.json"
-          jq --arg v "$NEW_VERSION" '.version = $v' "$PLUGIN_JSON" > tmp.json && mv tmp.json "$PLUGIN_JSON"
+          # Update all extension plugin.json files
+          for PLUGIN_JSON in extensions/*/.claude-plugin/plugin.json; do
+            if [ -f "$PLUGIN_JSON" ]; then
+              jq --arg v "$NEW_VERSION" '.version = $v' "$PLUGIN_JSON" > tmp.json && mv tmp.json "$PLUGIN_JSON"
+              echo "Updated $PLUGIN_JSON to $NEW_VERSION"
+            fi
+          done
 
-          echo "Updated plugin.json:"
-          cat "$PLUGIN_JSON"
+          # Update root plugin.json
+          ROOT_PLUGIN=".claude-plugin/plugin.json"
+          jq --arg v "$NEW_VERSION" '.version = $v' "$ROOT_PLUGIN" > tmp.json && mv tmp.json "$ROOT_PLUGIN"
+          echo "Updated $ROOT_PLUGIN to $NEW_VERSION"
 
       - name: Commit changes
         env:
           NEW_VERSION: ${{ steps.version.outputs.new }}
         run: |
-          git add CHANGELOG.md .claude-plugin/plugin.json
+          git add CHANGELOG.md .claude-plugin/plugin.json extensions/*/.claude-plugin/plugin.json
           git commit -m "chore: prepare release v${NEW_VERSION}"
 
       - name: Create and push tag
@@ -144,7 +151,7 @@ jobs:
             cat release_notes.md
             echo ""
             echo "## Full Changelog"
-            echo "https://github.com/itk-dev/itkdev-claude-plugins/compare/v${CURRENT_VERSION}...v${NEW_VERSION}"
+            echo "https://github.com/itk-dev/itkdev-claude-tools/compare/v${CURRENT_VERSION}...v${NEW_VERSION}"
           } > full_release_notes.md
 
           gh release create "$TAG" \

@@ -1,16 +1,21 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "itkdev-marketplace",
-  "description": "ITK Dev team tools and MCP servers for Claude Code",
+  "description": "ITK Dev team tools, skills, and MCP servers for Claude Code",
   "owner": {
     "name": "ITK Dev",
     "email": "itkdev@mkb.aarhus.dk"
   },
   "plugins": [
     {
-      "name": "itkdev-tools",
-      "description": "ITK Dev tools and MCP servers for Claude Code",
-      "source": "./"
+      "name": "itkdev-skills",
+      "description": "ITK Dev team conventions, workflows, and coding standards",
+      "source": "./extensions/itkdev-skills"
+    },
+    {
+      "name": "itkdev-browser-feedback",
+      "description": "Browser-based visual feedback and annotation MCP server",
+      "source": "./extensions/itkdev-browser-feedback"
     },
     {
       "name": "itkdev-statusline",

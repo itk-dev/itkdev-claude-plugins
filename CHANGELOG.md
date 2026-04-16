@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Updated itkdev-skills plugin reference to reflect new `itkdev-symfony` skill and `itkdev-create-project` agent (11 skills, 3 agents)
+
 ### Changed
 
 - **Converted to pure marketplace catalog** — all plugins now live in their own repos (#34):

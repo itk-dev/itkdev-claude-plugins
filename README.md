@@ -42,7 +42,7 @@ claude plugin add itk-dev/itkdev-claude-code-statusline
 
 | Plugin | Repository | Description |
 |--------|-----------|-------------|
-| **itkdev-skills** | [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) | ITK Dev team conventions, workflows, and coding standards (10 skills, 2 agents) |
+| **itkdev-skills** | [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) | ITK Dev team conventions, workflows, and coding standards (11 skills, 3 agents) |
 | **itkdev-browser-feedback** | [itk-dev/mcp-claude-code-browser-feedback](https://github.com/itk-dev/mcp-claude-code-browser-feedback) | Browser-based visual feedback and annotation MCP server |
 | **itkdev-statusline** | [itk-dev/itkdev-claude-code-statusline](https://github.com/itk-dev/itkdev-claude-code-statusline) | Claude Code statusline with git branch, plan/task progress, and context window usage |
 

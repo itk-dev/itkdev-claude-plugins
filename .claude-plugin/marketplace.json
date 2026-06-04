@@ -8,11 +8,30 @@
   },
   "plugins": [
     {
-      "name": "itkdev-skills",
-      "description": "ITK Dev team conventions, workflows, and coding standards",
+      "name": "itkdev-code-quality-and-review",
+      "description": "ITK Dev code review agent and per-language review skills (PHP, Python, JavaScript), comment review, and standards validation",
       "source": {
-        "source": "github",
-        "repo": "itk-dev/itkdev-skills"
+        "source": "git-subdir",
+        "url": "itk-dev/itkdev-skills",
+        "path": "plugins/itkdev-code-quality-and-review"
+      }
+    },
+    {
+      "name": "itkdev-scaffolding-and-templates",
+      "description": "Docker development environment, project templates, GitHub Actions, Taskfile, and Drupal/Symfony scaffolding",
+      "source": {
+        "source": "git-subdir",
+        "url": "itk-dev/itkdev-skills",
+        "path": "plugins/itkdev-scaffolding-and-templates"
+      }
+    },
+    {
+      "name": "itkdev-business-automation",
+      "description": "Autonomous issue workflow, GitHub guidelines, Architecture Decision Records, and documentation generation",
+      "source": {
+        "source": "git-subdir",
+        "url": "itk-dev/itkdev-skills",
+        "path": "plugins/itkdev-business-automation"
       }
     },
     {

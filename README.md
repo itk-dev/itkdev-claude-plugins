@@ -25,15 +25,16 @@ Team members can install the marketplace and individual plugins:
 /plugin marketplace add itk-dev/itkdev-claude-plugins
 
 # Install plugins individually
-/plugin install itkdev-skills@itkdev-marketplace
+/plugin install itkdev-code-quality-and-review@itkdev-marketplace
+/plugin install itkdev-scaffolding-and-templates@itkdev-marketplace
+/plugin install itkdev-business-automation@itkdev-marketplace
 /plugin install itkdev-browser-feedback@itkdev-marketplace
 /plugin install itkdev-statusline@itkdev-marketplace
 ```
 
-Or install plugins directly from their repos:
+Or install the MCP/statusline plugins directly from their repos:
 
 ```bash
-claude plugin add itk-dev/itkdev-skills
 claude plugin add itk-dev/mcp-claude-code-browser-feedback
 claude plugin add itk-dev/itkdev-claude-code-statusline
 ```
@@ -42,7 +43,9 @@ claude plugin add itk-dev/itkdev-claude-code-statusline
 
 | Plugin | Repository | Description |
 |--------|-----------|-------------|
-| **itkdev-skills** | [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) | ITK Dev team conventions, workflows, and coding standards (11 skills, 3 agents) |
+| **itkdev-code-quality-and-review** | [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) (`plugins/itkdev-code-quality-and-review`) | Code review agent and per-language review skills (PHP, Python, JavaScript), comment review, standards validation |
+| **itkdev-scaffolding-and-templates** | [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) (`plugins/itkdev-scaffolding-and-templates`) | Docker dev environment, project templates, GitHub Actions, Taskfile, Drupal/Symfony scaffolding |
+| **itkdev-business-automation** | [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) (`plugins/itkdev-business-automation`) | Autonomous issue workflow, GitHub guidelines, ADRs, documentation generation |
 | **itkdev-browser-feedback** | [itk-dev/mcp-claude-code-browser-feedback](https://github.com/itk-dev/mcp-claude-code-browser-feedback) | Browser-based visual feedback and annotation MCP server |
 | **itkdev-statusline** | [itk-dev/itkdev-claude-code-statusline](https://github.com/itk-dev/itkdev-claude-code-statusline) | Claude Code statusline with git branch, plan/task progress, and context window usage |
 
@@ -91,6 +94,22 @@ To add a new plugin to the marketplace, add an entry to `.claude-plugin/marketpl
   "source": {
     "source": "github",
     "repo": "itk-dev/your-plugin-repo"
+  }
+}
+```
+
+For a plugin that lives in a **subdirectory** of a repo (as the three
+`itkdev-*` plugins do, all hosted in `itk-dev/itkdev-skills`), use a
+`git-subdir` source instead:
+
+```json
+{
+  "name": "your-plugin-name",
+  "description": "Description of your plugin",
+  "source": {
+    "source": "git-subdir",
+    "url": "itk-dev/your-repo",
+    "path": "plugins/your-plugin-name"
   }
 }
 ```

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING:** Replaced the single `itkdev-skills` plugin entry with three category plugins, all
+  hosted in [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) via `git-subdir`
+  sources pointing at `plugins/<name>/`:
+  - `itkdev-code-quality-and-review`
+  - `itkdev-scaffolding-and-templates`
+  - `itkdev-business-automation`
+
+  Existing users must install the new plugins; `itkdev-skills` no longer resolves. Categories follow
+  the skill types in Anthropic's *Lessons from building Claude Code: how we use skills*.
+
 ### Added
 
 - Updated itkdev-skills plugin reference to reflect new `itkdev-symfony` skill and `itkdev-create-project` agent (11 skills, 3 agents)

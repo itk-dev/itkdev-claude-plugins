@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- New **`itkdev-tooling`** plugin from [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) 
+  via `git-subdir` (`plugins/itkdev-tooling`) — an Obsidian knowledge base (vault notes, Obsidian Flavored
+  Markdown, JSON Canvas diagrams).
+
 - Updated itkdev-skills plugin reference to reflect new `itkdev-symfony` skill and `itkdev-create-project` agent (11 skills, 3 agents)
 
 ### Changed

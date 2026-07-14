@@ -35,6 +35,15 @@
       }
     },
     {
+      "name": "itkdev-tooling",
+      "description": "ITK Dev tooling — an Obsidian knowledge base: bootstrap a project vault, capture and maintain notes, author Obsidian Flavored Markdown, and build JSON Canvas diagrams",
+      "source": {
+        "source": "git-subdir",
+        "url": "itk-dev/itkdev-skills",
+        "path": "plugins/itkdev-tooling"
+      }
+    },
+    {
       "name": "itkdev-browser-feedback",
       "description": "Browser-based visual feedback and annotation MCP server",
       "source": {

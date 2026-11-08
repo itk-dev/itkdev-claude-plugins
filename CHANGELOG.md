@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- New **`itkdev-infrastructure-operations`** plugin from [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills)
+  via `git-subdir` (`plugins/itkdev-infrastructure-operations`) — routine maintenance of projects (skill
+  `itkdev-dependency-updates`: CVE/advisory updates and the quarterly update).
+
 - New **`itkdev-tooling`** plugin from [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) 
   via `git-subdir` (`plugins/itkdev-tooling`) — an Obsidian knowledge base (vault notes, Obsidian Flavored
   Markdown, JSON Canvas diagrams).

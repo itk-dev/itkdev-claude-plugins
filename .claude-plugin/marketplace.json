@@ -44,6 +44,15 @@
       }
     },
     {
+      "name": "itkdev-infrastructure-operations",
+      "description": "ITK Dev infrastructure operations: routine maintenance of projects, such as dependency and security updates",
+      "source": {
+        "source": "git-subdir",
+        "url": "itk-dev/itkdev-skills",
+        "path": "plugins/itkdev-infrastructure-operations"
+      }
+    },
+    {
       "name": "itkdev-browser-feedback",
       "description": "Browser-based visual feedback and annotation MCP server",
       "source": {

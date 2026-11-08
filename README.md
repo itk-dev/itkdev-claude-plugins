@@ -28,6 +28,7 @@ Team members can install the marketplace and individual plugins:
 /plugin install itkdev-code-quality-and-review@itkdev-marketplace
 /plugin install itkdev-scaffolding-and-templates@itkdev-marketplace
 /plugin install itkdev-business-automation@itkdev-marketplace
+/plugin install itkdev-infrastructure-operations@itkdev-marketplace
 /plugin install itkdev-browser-feedback@itkdev-marketplace
 /plugin install itkdev-statusline@itkdev-marketplace
 ```
@@ -46,6 +47,7 @@ claude plugin add itk-dev/itkdev-claude-code-statusline
 | **itkdev-code-quality-and-review** | [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) (`plugins/itkdev-code-quality-and-review`) | Code review agent and per-language review skills (PHP, Python, JavaScript), comment review, standards validation |
 | **itkdev-scaffolding-and-templates** | [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) (`plugins/itkdev-scaffolding-and-templates`) | Docker dev environment, project templates, GitHub Actions, Taskfile, Drupal/Symfony scaffolding |
 | **itkdev-business-automation** | [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) (`plugins/itkdev-business-automation`) | Autonomous issue workflow, GitHub guidelines, ADRs, documentation generation |
+| **itkdev-infrastructure-operations** | [itk-dev/itkdev-skills](https://github.com/itk-dev/itkdev-skills) (`plugins/itkdev-infrastructure-operations`) | Routine maintenance of projects: dependency and security updates |
 | **itkdev-browser-feedback** | [itk-dev/mcp-claude-code-browser-feedback](https://github.com/itk-dev/mcp-claude-code-browser-feedback) | Browser-based visual feedback and annotation MCP server |
 | **itkdev-statusline** | [itk-dev/itkdev-claude-code-statusline](https://github.com/itk-dev/itkdev-claude-code-statusline) | Claude Code statusline with git branch, plan/task progress, and context window usage |
 
